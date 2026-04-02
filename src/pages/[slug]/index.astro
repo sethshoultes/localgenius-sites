@@ -13,25 +13,25 @@ const { slug } = Astro.params;
 
 const site = {
   name: "Maria's Kitchen",
-  tagline: "Handmade pasta in the heart of Logan Square since 1998",
-  phone: "(773) 555-0142",
+  tagline: "Real Tex-Mex. Real people. Since 2019.",
+  phone: "(512) 555-0142",
   email: "hello@mariaskitchen.com",
   address: {
-    street: "2847 N. Milwaukee Ave",
-    city: "Chicago",
-    state: "IL",
-    zip: "60647",
+    street: "1401 S Lamar Blvd",
+    city: "Austin",
+    state: "TX",
+    zip: "78704",
   },
   hero: {
-    headline: "Where the noodles are rolled before the sun comes up",
-    subheadline: "Family recipes from Oaxaca, made fresh daily. Walk-ins welcome.",
+    headline: "Where the tortillas are pressed before the sun comes up",
+    subheadline: "Family recipes from Oaxaca, made fresh daily on South Lamar. Walk-ins welcome.",
     backgroundImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80",
     ctaPrimary: { label: "View Our Menu", href: `/${slug}/menu` },
     ctaSecondary: { label: "Book a Table", href: `/${slug}/contact` },
   },
   about: {
     heading: "Three generations of the same red sauce",
-    body: "When my grandmother came to Chicago in 1972, she carried two things: her cast-iron comal and a notebook of recipes written in pencil. Maria's Kitchen started as weekend tamales sold from our front porch. Twenty-six years later, we are still cooking from that same notebook.\n\nWe make everything by hand — the tortillas, the mole, the carnitas that take fourteen hours. Nothing comes from a can, nothing from a freezer. If we run out, we run out. That is the only way we know how to do it.",
+    body: "When my grandmother came to Austin in 2005, she carried two things: her cast-iron comal and a notebook of recipes written in pencil. Maria's Kitchen started as weekend tamales sold at the SFC Farmers' Market. Fourteen years later, we opened on South Lamar and we are still cooking from that same notebook.\n\nWe make everything by hand — the tortillas, the mole, the carnitas that take fourteen hours. Nothing comes from a can, nothing from a freezer. If we run out, we run out. That is the only way we know how to do it.",
     highlight: "Every dish made from scratch, every day, no exceptions.",
   },
   menuHighlights: [
@@ -57,8 +57,8 @@ const site = {
   ],
   aggregateRating: { score: 4.8, count: 247, source: "Google" },
   meta: {
-    title: "Maria's Kitchen — Mexican Restaurant in Chicago",
-    description: "Handmade Mexican food in Logan Square. Mole, carnitas, tamales made from scratch daily. Walk-ins welcome. Open Tue-Sun.",
+    title: "Maria's Kitchen — Tex-Mex Restaurant in Austin",
+    description: "Authentic Tex-Mex on South Lamar. Mole, carnitas, tamales made from scratch daily. Walk-ins welcome. Open Tue-Sun.",
   },
 };
 
@@ -79,35 +79,41 @@ function renderStars(rating: number): string {
     <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
     <style>
       /* --------------------------------------------------------
-         Design Tokens (Craft Theme)
+         Design Tokens — LocalGenius Craft Theme
+         Terracotta accent, Sage secondary, Source Sans 3 body
          -------------------------------------------------------- */
       :root {
-        --color-bg-base:        #fafaf9;
+        --color-bg-base:        #FAF8F5;
         --color-bg-elevated:    #ffffff;
-        --color-bg-sunken:      #f5f5f4;
+        --color-bg-sunken:      #F2EDE8;
         --color-surface:        #ffffff;
-        --color-surface-muted:  #f5f5f4;
-        --color-surface-subtle: #e7e5e4;
-        --color-brand:          #d97706;
-        --color-brand-hover:    #b45309;
-        --color-brand-active:   #92400e;
-        --color-brand-subtle:   #fffbeb;
-        --color-brand-muted:    #fef3c7;
-        --color-text-primary:   #1c1917;
-        --color-text-secondary: #57534e;
-        --color-text-tertiary:  #a8a29e;
+        --color-surface-muted:  #F2EDE8;
+        --color-surface-subtle: #E7E5E4;
+        --color-brand:          #C4704B;
+        --color-brand-hover:    #A35535;
+        --color-brand-active:   #8A4429;
+        --color-brand-subtle:   #FDF5F1;
+        --color-brand-muted:    #F5E0D5;
+        --color-text-primary:   #2C2C2C;
+        --color-text-secondary: #6B7280;
+        --color-text-tertiary:  #8390A0;
         --color-text-inverse:   #ffffff;
-        --color-text-brand:     #b45309;
-        --color-border:         #e7e5e4;
-        --color-border-brand:   #fcd34d;
-        --color-divider-menu:   #fde68a;
-        --color-price:          #b45309;
-        --color-star:           #f59e0b;
+        --color-text-brand:     #A35535;
+        --color-border:         #E7E5E4;
+        --color-border-brand:   #F5E0D5;
+        --color-divider-menu:   #F5E0D5;
+        --color-price:          #A35535;
+        --color-star:           #D4A853;
+        --color-sage:           #7A8B6F;
+        --color-sage-text:      #5C6B52;
+        --color-sage-light:     #E8EDE5;
         --font-display:         'Lora', 'Georgia', serif;
-        --font-body:            'Inter', 'system-ui', sans-serif;
+        --font-body:            'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
         --shadow-sm:            0 1px 2px 0 rgb(0 0 0 / 0.05);
         --shadow-md:            0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
         --shadow-lg:            0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
@@ -808,7 +814,7 @@ function renderStars(rating: number): string {
     <!-- Footer -->
     <footer class="footer">
       <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-      <p style="margin-top: 0.5rem;">Made with <a href="https://localgenius.site">LocalGenius</a></p>
+      <p style="margin-top: 0.5rem; color: var(--color-sage);">Made with <a href="https://localgenius.company" style="color: var(--color-sage-text, #5C6B52); text-decoration: none;">LocalGenius</a></p>
     </footer>
 
   </body>
