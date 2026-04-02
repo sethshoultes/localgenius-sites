@@ -1,0 +1,480 @@
+---
+/**
+ * Restaurant Contact Page — [slug]/contact.astro
+ *
+ * Phone, address, email, hours table, and map placeholder.
+ * Hardcoded sample data for "Maria's Kitchen".
+ * Uses Craft theme design tokens.
+ */
+
+const { slug } = Astro.params;
+
+const site = {
+  name: "Maria's Kitchen",
+  phone: "(773) 555-0142",
+  email: "hello@mariaskitchen.com",
+  address: {
+    street: "2847 N. Milwaukee Ave",
+    city: "Chicago",
+    state: "IL",
+    zip: "60647",
+  },
+  hours: {
+    monday: "Closed",
+    tuesday: "11:00 AM - 9:00 PM",
+    wednesday: "11:00 AM - 9:00 PM",
+    thursday: "11:00 AM - 9:00 PM",
+    friday: "11:00 AM - 10:00 PM",
+    saturday: "10:00 AM - 10:00 PM",
+    sunday: "10:00 AM - 8:00 PM",
+    notes: "Kitchen closes 30 minutes before close",
+  },
+  parking: "Street parking on Milwaukee Ave. Paid lot on Kedzie, one block east.",
+  meta: {
+    title: "Contact — Maria's Kitchen",
+    description: "Get in touch with Maria's Kitchen in Logan Square, Chicago. Phone, address, hours, and directions.",
+  },
+};
+
+const fullAddress = `${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{site.meta.title}</title>
+    <meta name="description" content={site.meta.description} />
+    <meta property="og:title" content={site.meta.title} />
+    <meta property="og:description" content={site.meta.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* --------------------------------------------------------
+         Design Tokens (Craft Theme)
+         -------------------------------------------------------- */
+      :root {
+        --color-bg-base:        #fafaf9;
+        --color-bg-elevated:    #ffffff;
+        --color-bg-sunken:      #f5f5f4;
+        --color-surface:        #ffffff;
+        --color-surface-muted:  #f5f5f4;
+        --color-surface-subtle: #e7e5e4;
+        --color-brand:          #d97706;
+        --color-brand-hover:    #b45309;
+        --color-brand-subtle:   #fffbeb;
+        --color-brand-muted:    #fef3c7;
+        --color-text-primary:   #1c1917;
+        --color-text-secondary: #57534e;
+        --color-text-tertiary:  #a8a29e;
+        --color-text-inverse:   #ffffff;
+        --color-text-brand:     #b45309;
+        --color-border:         #e7e5e4;
+        --color-border-brand:   #fcd34d;
+        --color-price:          #b45309;
+        --font-display:         'Lora', 'Georgia', serif;
+        --font-body:            'Inter', 'system-ui', sans-serif;
+        --shadow-sm:            0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md:            0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        --radius-md:            0.5rem;
+        --radius-lg:            0.75rem;
+      }
+
+      /* --------------------------------------------------------
+         Reset & Base
+         -------------------------------------------------------- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+      body {
+        font-family: var(--font-body);
+        color: var(--color-text-primary);
+        background: var(--color-bg-base);
+        line-height: 1.65;
+      }
+      img { max-width: 100%; height: auto; display: block; }
+      a { color: var(--color-text-brand); text-decoration: none; }
+      a:hover { color: var(--color-brand-hover); }
+
+      /* --------------------------------------------------------
+         Layout
+         -------------------------------------------------------- */
+      .container {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      /* --------------------------------------------------------
+         Nav
+         -------------------------------------------------------- */
+      .nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .nav__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 3.5rem;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      .nav__brand {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--color-text-primary);
+        text-decoration: none;
+      }
+
+      .nav__links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .nav__links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        transition: color 150ms;
+      }
+
+      .nav__links a:hover { color: var(--color-text-brand); }
+      .nav__links .active { color: var(--color-text-brand); }
+
+      /* --------------------------------------------------------
+         Page Header
+         -------------------------------------------------------- */
+      .page-header {
+        padding: 6rem 0 2.5rem;
+        text-align: center;
+        margin-top: 3.5rem;
+      }
+
+      .page-header__title {
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+      }
+
+      .page-header__subtitle {
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* --------------------------------------------------------
+         Contact Grid
+         -------------------------------------------------------- */
+      .contact-grid {
+        display: grid;
+        gap: 3rem;
+        padding-bottom: 4rem;
+      }
+
+      /* --------------------------------------------------------
+         Contact Info Cards
+         -------------------------------------------------------- */
+      .info-cards {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .info-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .info-card__label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--color-text-brand);
+        margin-bottom: 0.75rem;
+      }
+
+      .info-card__value {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--color-text-primary);
+      }
+
+      .info-card__value a {
+        color: var(--color-text-primary);
+        font-weight: 500;
+      }
+
+      .info-card__value a:hover {
+        color: var(--color-text-brand);
+      }
+
+      .info-card__note {
+        font-size: 0.8125rem;
+        color: var(--color-text-tertiary);
+        margin-top: 0.5rem;
+      }
+
+      /* --------------------------------------------------------
+         Hours Table
+         -------------------------------------------------------- */
+      .hours-section {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .hours-section__title {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hours-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .hours-table tr {
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .hours-table tr:last-child {
+        border-bottom: none;
+      }
+
+      .hours-table td {
+        padding: 0.625rem 0;
+        font-size: 0.9375rem;
+      }
+
+      .hours-table td:first-child {
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+
+      .hours-table td:last-child {
+        text-align: right;
+        color: var(--color-text-secondary);
+      }
+
+      .hours-table .closed {
+        color: var(--color-text-tertiary);
+      }
+
+      .hours-note {
+        font-size: 0.8125rem;
+        color: var(--color-text-tertiary);
+        margin-top: 0.75rem;
+        font-style: italic;
+      }
+
+      /* --------------------------------------------------------
+         Map
+         -------------------------------------------------------- */
+      .map-section {
+        margin-top: 0.5rem;
+      }
+
+      .map-placeholder {
+        width: 100%;
+        height: 320px;
+        background: var(--color-surface-subtle);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-tertiary);
+        font-size: 0.875rem;
+      }
+
+      .map-section__directions {
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .map-section__directions a {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-brand);
+      }
+
+      /* --------------------------------------------------------
+         Footer
+         -------------------------------------------------------- */
+      .footer {
+        text-align: center;
+        padding: 2rem 1.25rem;
+        border-top: 1px solid var(--color-border);
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .footer a {
+        color: var(--color-text-tertiary);
+        text-decoration: underline;
+      }
+
+      /* --------------------------------------------------------
+         Responsive
+         -------------------------------------------------------- */
+      @media (min-width: 768px) {
+        .page-header__title {
+          font-size: 3rem;
+        }
+
+        .contact-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+
+        .info-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .map-placeholder {
+          height: 400px;
+        }
+
+        .container {
+          padding: 0 2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .nav__inner { height: 4rem; }
+        .page-header { margin-top: 4rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="nav__inner">
+        <a href={`/${slug}`} class="nav__brand">{site.name}</a>
+        <ul class="nav__links">
+          <li><a href={`/${slug}/menu`}>Menu</a></li>
+          <li><a href={`/${slug}/contact`} class="active">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-header__title">Get in Touch</h1>
+      <p class="page-header__subtitle">We would love to hear from you. Walk-ins are always welcome.</p>
+    </header>
+
+    <!-- Contact Content -->
+    <main class="container">
+      <div class="contact-grid">
+
+        <!-- Left Column: Info + Hours -->
+        <div>
+          <div class="info-cards">
+
+            <!-- Phone -->
+            <div class="info-card">
+              <p class="info-card__label">Phone</p>
+              <p class="info-card__value">
+                <a href={`tel:${site.phone}`}>{site.phone}</a>
+              </p>
+              <p class="info-card__note">Call for reservations (parties of 6+)</p>
+            </div>
+
+            <!-- Address -->
+            <div class="info-card">
+              <p class="info-card__label">Address</p>
+              <p class="info-card__value">
+                {site.address.street}<br />
+                {site.address.city}, {site.address.state} {site.address.zip}
+              </p>
+              {site.parking && (
+                <p class="info-card__note">{site.parking}</p>
+              )}
+            </div>
+
+            <!-- Email -->
+            <div class="info-card">
+              <p class="info-card__label">Email</p>
+              <p class="info-card__value">
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </p>
+              <p class="info-card__note">For catering inquiries and private events</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Hours -->
+        <div>
+          <div class="hours-section">
+            <h2 class="hours-section__title">Hours</h2>
+            <table class="hours-table">
+              {Object.entries({
+                Monday: site.hours.monday,
+                Tuesday: site.hours.tuesday,
+                Wednesday: site.hours.wednesday,
+                Thursday: site.hours.thursday,
+                Friday: site.hours.friday,
+                Saturday: site.hours.saturday,
+                Sunday: site.hours.sunday,
+              }).map(([day, hours]: [string, string]) => (
+                <tr>
+                  <td>{day}</td>
+                  <td class={hours === 'Closed' ? 'closed' : ''}>{hours}</td>
+                </tr>
+              ))}
+            </table>
+            {site.hours.notes && (
+              <p class="hours-note">{site.hours.notes}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <section class="map-section">
+        <div class="map-placeholder" aria-label="Map showing restaurant location">
+          Map embed will go here
+        </div>
+        <div class="map-section__directions">
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get Directions on Google Maps
+          </a>
+        </div>
+      </section>
+
+      <div style="height: 3rem;"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Made with <a href="https://localgenius.site">LocalGenius</a></p>
+    </footer>
+
+  </body>
+</html>

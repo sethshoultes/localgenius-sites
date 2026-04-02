@@ -1,0 +1,18 @@
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.production
+.wrangler/
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
