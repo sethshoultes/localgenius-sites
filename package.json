@@ -1,0 +1,26 @@
+{
+  "name": "localgenius-sites",
+  "version": "0.1.0",
+  "description": "LocalGenius — AI-powered website builder on Cloudflare. Provisions Emdash sites per business in seconds.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^10.3.0",
+    "astro": "^4.7.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240512.0",
+    "typescript": "^5.4.5",
+    "vitest": "^4.1.2",
+    "wrangler": "^3.54.0"
+  }
+}

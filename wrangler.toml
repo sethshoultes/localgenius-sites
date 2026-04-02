@@ -1,0 +1,47 @@
+name = "localgenius-sites"
+compatibility_date = "2024-05-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "./dist"
+
+# ===========================================================
+# D1 Databases
+# One global registry DB. Each business site gets its own D1
+# provisioned dynamically via the Cloudflare API at runtime.
+# ===========================================================
+[[d1_databases]]
+binding = "DB"
+database_name = "localgenius-registry"
+database_id = "611a324c-bf2e-41a4-b0d9-4e7b1ff41c75"
+
+# ===========================================================
+# R2 Buckets
+# Global assets bucket. Per-site buckets provisioned at runtime.
+# ===========================================================
+[[r2_buckets]]
+binding = "SITE_ASSETS"
+bucket_name = "localgenius-media"
+
+# ===========================================================
+# Environment Variables (non-secret)
+# Secrets go in: wrangler secret put CLOUDFLARE_API_TOKEN
+# ===========================================================
+[vars]
+ENVIRONMENT = "production"
+LOCALGENIUS_DOMAIN = "localgenius.site"
+EMDASH_WORKER_TEMPLATE = "localgenius-site-template"
+
+# ===========================================================
+# Environments
+# ===========================================================
+[env.staging]
+name = "localgenius-sites-staging"
+vars = { ENVIRONMENT = "staging", LOCALGENIUS_DOMAIN = "staging.localgenius.site" }
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "localgenius-registry-staging"
+database_id = "REPLACE_WITH_YOUR_STAGING_D1_ID"
+
+[[env.staging.r2_buckets]]
+binding = "SITE_ASSETS"
+bucket_name = "localgenius-media-staging"

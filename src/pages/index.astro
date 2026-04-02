@@ -1,0 +1,34 @@
+---
+// LocalGenius Sites — Landing / Status Page
+// This is the control plane, not the customer-facing product.
+// Business sites live at {slug}.localgenius.site
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LocalGenius Sites — Control Plane</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 800px; margin: 80px auto; padding: 0 24px; }
+      h1 { font-size: 2rem; font-weight: 700; }
+      pre { background: #f4f4f4; padding: 16px; border-radius: 8px; overflow: auto; }
+      a { color: #0070f3; }
+    </style>
+  </head>
+  <body>
+    <h1>LocalGenius Sites</h1>
+    <p>Emdash-powered website builder on Cloudflare Workers + D1 + R2.</p>
+    <p>Each provisioned site lives at <code>{slug}.localgenius.site</code>.</p>
+    <h2>API Endpoints</h2>
+    <pre>
+POST /api/provision       — Provision a new business site
+GET  /api/sites           — List all provisioned sites
+GET  /api/sites/:slug     — Get site status
+POST /api/sites/:slug/update — Send content update via MCP
+    </pre>
+    <h2>Documentation</h2>
+    <p><a href="/api/provision">Provision API</a> — Requires CLOUDFLARE_API_TOKEN header.</p>
+  </body>
+</html>
