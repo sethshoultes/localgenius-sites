@@ -22,6 +22,12 @@ binding = "SITE_ASSETS"
 bucket_name = "localgenius-media"
 
 # ===========================================================
+# Workers AI — Whisper speech-to-text for voice input
+# ===========================================================
+[ai]
+binding = "AI"
+
+# ===========================================================
 # Environment Variables (non-secret)
 # Secrets go in: wrangler secret put CLOUDFLARE_API_TOKEN
 # ===========================================================
