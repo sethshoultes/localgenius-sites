@@ -31,17 +31,17 @@ LOCALGENIUS_DOMAIN = "localgenius.site"
 EMDASH_WORKER_TEMPLATE = "localgenius-site-template"
 
 # ===========================================================
-# Environments
+# Environments (Pages supports "preview" and "production")
 # ===========================================================
-[env.staging]
-name = "localgenius-sites-staging"
-vars = { ENVIRONMENT = "staging", LOCALGENIUS_DOMAIN = "staging.localgenius.site" }
+[env.preview]
+name = "localgenius-sites-preview"
+vars = { ENVIRONMENT = "preview", LOCALGENIUS_DOMAIN = "preview.localgenius.site" }
 
-[[env.staging.d1_databases]]
+[[env.preview.d1_databases]]
 binding = "DB"
-database_name = "localgenius-registry-staging"
-database_id = "REPLACE_WITH_YOUR_STAGING_D1_ID"
+database_name = "localgenius-registry"
+database_id = "611a324c-bf2e-41a4-b0d9-4e7b1ff41c75"
 
-[[env.staging.r2_buckets]]
+[[env.preview.r2_buckets]]
 binding = "SITE_ASSETS"
-bucket_name = "localgenius-media-staging"
+bucket_name = "localgenius-media"
