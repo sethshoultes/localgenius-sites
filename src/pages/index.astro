@@ -214,6 +214,67 @@
         color: var(--color-text-primary);
       }
 
+      /* Demo Sites */
+      .demos {
+        padding: 3rem 0;
+        border-top: 1px solid var(--color-border);
+      }
+      .demos h2 {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      .demos-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+      @media (min-width: 640px) {
+        .demos-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      .demo-card {
+        display: block;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: box-shadow 200ms, border-color 200ms;
+      }
+      .demo-card:hover {
+        border-color: var(--color-brand);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      .demo-card-badge {
+        display: inline-block;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        background: var(--color-brand-light);
+        color: var(--color-brand);
+        padding: 0.125rem 0.5rem;
+        border-radius: 9999px;
+        margin-bottom: 0.75rem;
+      }
+      .demo-card h3 {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .demo-card p {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+      }
+      .demo-card-link {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-brand);
+      }
+
       /* Footer */
       .footer {
         padding: 2rem 0;
@@ -251,8 +312,28 @@
           Professional websites for local businesses — built by AI, hosted on the edge,
           managed through conversation. No CMS. No drag-and-drop. Just tell us what you need.
         </p>
-        <a href="/marias-kitchen" class="hero-cta">See a demo site</a>
-        <a href="https://localgenius.company/welcome" class="hero-cta" style="background: transparent; color: var(--color-brand); border: 2px solid var(--color-brand);">Get started</a>
+        <a href="https://localgenius.company/welcome" class="hero-cta">Get started</a>
+      </div>
+    </section>
+
+    <!-- Demo Sites -->
+    <section class="demos">
+      <div class="container">
+        <h2>Live demo sites</h2>
+        <div class="demos-grid">
+          <a href="/marias-kitchen" class="demo-card">
+            <div class="demo-card-badge">Restaurant</div>
+            <h3>Maria's Kitchen</h3>
+            <p>Tex-Mex on South Lamar, Austin. Menu, hours, reviews, booking.</p>
+            <span class="demo-card-link">View site &rarr;</span>
+          </a>
+          <a href="/bright-smile/services" class="demo-card">
+            <div class="demo-card-badge" style="background: var(--color-sage-light); color: var(--color-sage);">Professional</div>
+            <h3>Bright Smile Dental</h3>
+            <p>Dr. Sarah Chen's dental practice. Services, testimonials, booking.</p>
+            <span class="demo-card-link">View site &rarr;</span>
+          </a>
+        </div>
       </div>
     </section>
 
