@@ -2,15 +2,11 @@
 /**
  * LocalGenius Sites — Root Landing Page
  *
- * Serves as both:
- * 1. A professional landing for anyone who hits the root domain
- * 2. API reference for the provisioning system
- *
- * Business sites live at {slug}.localgenius.site
+ * Redirects to the demo restaurant site (Maria's Kitchen)
  */
----
 
-<!doctype html>
+return Astro.redirect('/marias-kitchen');
+---
 <html lang="en">
   <head>
     <meta charset="UTF-8" />

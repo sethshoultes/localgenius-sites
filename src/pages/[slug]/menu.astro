@@ -8,7 +8,17 @@
  */
 
 const { slug } = Astro.params;
-if (!slug) { return Astro.redirect('/'); }
+
+// Guard: if no slug, redirect to the default restaurant
+if (!slug || slug === 'undefined' || slug === 'null') {
+  return Astro.redirect('/marias-kitchen');
+}
+
+// Reserved slugs that should never be treated as business slugs
+const RESERVED = ['menu', 'contact', 'services', 'book', 'api', 'undefined', 'null', 'favicon.ico'];
+if (RESERVED.includes(slug)) {
+  return Astro.redirect('/marias-kitchen');
+}
 
 const site = {
   name: "Maria's Kitchen",
