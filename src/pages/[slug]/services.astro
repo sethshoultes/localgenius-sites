@@ -8,6 +8,7 @@
  */
 
 const { slug } = Astro.params;
+if (!slug) { return Astro.redirect('/'); }
 
 // --- Sample data: Bright Smile Dental ---
 

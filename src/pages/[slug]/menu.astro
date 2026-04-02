@@ -8,6 +8,7 @@
  */
 
 const { slug } = Astro.params;
+if (!slug) { return Astro.redirect('/'); }
 
 const site = {
   name: "Maria's Kitchen",

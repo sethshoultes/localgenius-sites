@@ -9,6 +9,11 @@
 
 const { slug } = Astro.params;
 
+// Guard: if no slug, redirect to the landing page
+if (!slug) {
+  return Astro.redirect('/');
+}
+
 // --- Sample data: Maria's Kitchen ---
 
 const site = {
