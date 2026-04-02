@@ -2,10 +2,9 @@
 /**
  * LocalGenius Sites — Root Landing Page
  *
- * Redirects to the demo restaurant site (Maria's Kitchen)
+ * Shows the Sites product page with a link to the demo restaurant.
+ * This is the front door — not a redirect.
  */
-
-return Astro.redirect('/marias-kitchen');
 ---
 <html lang="en">
   <head>
@@ -252,7 +251,8 @@ return Astro.redirect('/marias-kitchen');
           Professional websites for local businesses — built by AI, hosted on the edge,
           managed through conversation. No CMS. No drag-and-drop. Just tell us what you need.
         </p>
-        <a href="https://localgenius.company/welcome" class="hero-cta">Get started</a>
+        <a href="/marias-kitchen" class="hero-cta">See a demo site</a>
+        <a href="https://localgenius.company/welcome" class="hero-cta" style="background: transparent; color: var(--color-brand); border: 2px solid var(--color-brand);">Get started</a>
       </div>
     </section>
 

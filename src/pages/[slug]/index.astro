@@ -11,18 +11,29 @@ import { isValidSlug } from '../../lib/validate-slug';
 
 const { slug } = Astro.params;
 
-// Guard: 404 for invalid or unknown slugs
+// Guard: empty or broken slugs go to root
+if (!slug || slug === 'undefined' || slug === 'null') {
+  return Astro.redirect('/');
+}
+
+// Reserved words: redirect to the demo site's subpage
+const SUBPAGES = ['menu', 'contact', 'services', 'book'];
+if (SUBPAGES.includes(slug)) {
+  return Astro.redirect(`/marias-kitchen/${slug}`);
+}
+
+// Known invalid paths: redirect to root
+const INVALID = ['api', 'favicon.ico', '_astro'];
+if (INVALID.includes(slug)) {
+  return Astro.redirect('/');
+}
+
+// Unknown slugs: 404 with a helpful page
 if (!isValidSlug(slug)) {
-  return new Response('<!DOCTYPE html><html><head><title>Site Not Found</title><style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#FAF8F5;color:#2C2C2C;margin:0}div{text-align:center}h1{font-size:2rem;margin-bottom:0.5rem}p{color:#6B7280}a{color:#C4704B}</style></head><body><div><h1>Site not found</h1><p>This business site doesn\'t exist yet.</p><p><a href="https://localgenius.company">Get your own site →</a></p></div></body></html>', {
+  return new Response('<!DOCTYPE html><html><head><title>Site Not Found</title><style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#FAF8F5;color:#2C2C2C;margin:0}div{text-align:center;max-width:400px}h1{font-size:2rem;margin-bottom:0.5rem}p{color:#6B7280;line-height:1.6}a{color:#C4704B}</style></head><body><div><h1>Site not found</h1><p>This business doesn\'t have a site here yet.</p><p><a href="/">Back to LocalGenius Sites</a></p></div></body></html>', {
     status: 404,
     headers: { 'Content-Type': 'text/html;charset=utf-8' },
   });
-}
-
-// Reserved slugs that should never be treated as business slugs
-const RESERVED = ['menu', 'contact', 'services', 'book', 'api', 'undefined', 'null', 'favicon.ico'];
-if (RESERVED.includes(slug)) {
-  return Astro.redirect('/marias-kitchen');
 }
 
 // --- Sample data: Maria's Kitchen ---

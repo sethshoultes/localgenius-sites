@@ -9,6 +9,7 @@
 const KNOWN_SLUGS = new Set([
   "marias-kitchen",
   "marias-kitchen-austin",
+  "bright-smile",
 ]);
 
 /**

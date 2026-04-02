@@ -11,14 +11,11 @@ import { isValidSlug } from '../../lib/validate-slug';
 
 const { slug } = Astro.params;
 
+if (!slug || slug === 'undefined' || slug === 'null') {
+  return Astro.redirect('/bright-smile/services');
+}
 if (!isValidSlug(slug)) {
   return new Response('Site not found.', { status: 404, headers: { 'Content-Type': 'text/plain' } });
-}
-
-// Reserved slugs that should never be treated as business slugs
-const RESERVED = ['menu', 'contact', 'services', 'book', 'api', 'undefined', 'null', 'favicon.ico'];
-if (RESERVED.includes(slug)) {
-  return Astro.redirect('/marias-kitchen');
 }
 
 // --- Sample data: Bright Smile Dental ---
