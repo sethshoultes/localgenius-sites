@@ -394,11 +394,11 @@ async function deployEmdashWorker(
 }
 
 function generateEmdashWorkerScript(slug: string): string {
-  // This is the entry point Worker. In production, Emdash's compiled
-  // bundle replaces this with the full CMS runtime. This scaffolds
-  // the correct module format and binding interface.
+  // Per-business Worker that queries D1 for content and renders HTML.
+  // Design tokens from product-design.md: Warm Charcoal #2C2C2C,
+  // Warm White #FAF8F5, Terracotta #C4704B, Source Sans 3.
   return `
-// LocalGenius — Emdash Worker for: ${slug}
+// LocalGenius — Site Worker for: ${slug}
 // Auto-provisioned by LocalGenius provisioning service
 
 export default {
@@ -416,10 +416,83 @@ export default {
       });
     }
 
-    // Emdash CMS runtime handles all other routes
-    // TODO: Replace with compiled Emdash bundle
-    return new Response('LocalGenius site for ${slug} — Emdash runtime initializing', {
-      headers: { 'Content-Type': 'text/plain' },
+    // Query D1 for business profile
+    let profile = null;
+    let pages = [];
+    try {
+      profile = await env.DB.prepare('SELECT * FROM business_profile WHERE slug = ? LIMIT 1').bind(env.BUSINESS_SLUG).first();
+      const result = await env.DB.prepare('SELECT * FROM site_pages WHERE published = 1 ORDER BY id').all();
+      pages = result.results || [];
+    } catch (e) {
+      return new Response('Site is being set up — check back in a moment.', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    }
+
+    if (!profile) {
+      return new Response('Site not found.', { status: 404, headers: { 'Content-Type': 'text/plain' } });
+    }
+
+    const homePage = pages.find(p => p.slug === 'home');
+    const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+    const html = \\\`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>\\\${esc(profile.name)} — \\\${esc(profile.type)} in \\\${esc(profile.city)}</title>
+  <meta name="description" content="\\\${esc(homePage?.meta_description || profile.name + ' — ' + profile.type + ' in ' + profile.city)}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: #FAF8F5; color: #2C2C2C; line-height: 1.6; }
+    .hero { padding: 80px 24px 60px; text-align: center; max-width: 720px; margin: 0 auto; }
+    .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .hero .tagline { font-size: 1.2rem; color: #666; margin-bottom: 24px; }
+    .hero .description { font-size: 1.05rem; max-width: 560px; margin: 0 auto 32px; }
+    .info { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 40px; }
+    .info-item { background: white; border-radius: 12px; padding: 16px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .info-item strong { color: #C4704B; }
+    .cta { display: inline-block; background: #C4704B; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: background 0.2s; }
+    .cta:hover { background: #a85d3d; }
+    .content { max-width: 720px; margin: 0 auto; padding: 0 24px 60px; }
+    .content p { margin-bottom: 16px; }
+    footer { text-align: center; padding: 40px 24px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; }
+    footer a { color: #C4704B; text-decoration: none; }
+    @media (max-width: 600px) {
+      .hero { padding: 48px 16px 40px; }
+      .hero h1 { font-size: 1.8rem; }
+      .info { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <h1>\\\${esc(profile.name)}</h1>
+    <p class="tagline">\\\${esc(profile.type)} in \\\${esc(profile.city)}</p>
+    \\\${profile.description ? '<p class="description">' + esc(profile.description) + '</p>' : ''}
+    <div class="info">
+      \\\${profile.phone ? '<div class="info-item"><strong>Call</strong> <a href="tel:' + esc(profile.phone) + '">' + esc(profile.phone) + '</a></div>' : ''}
+      \\\${profile.address ? '<div class="info-item"><strong>Visit</strong> ' + esc(profile.address) + '</div>' : ''}
+      \\\${profile.email ? '<div class="info-item"><strong>Email</strong> <a href="mailto:' + esc(profile.email) + '">' + esc(profile.email) + '</a></div>' : ''}
+    </div>
+    \\\${profile.phone ? '<a class="cta" href="tel:' + esc(profile.phone) + '">Call Now</a>' : ''}
+  </main>
+  \\\${homePage?.content ? '<section class="content"><p>' + esc(homePage.content) + '</p></section>' : ''}
+  <footer>
+    <p>Made with <a href="https://localgenius.company/sites?ref=\\\${esc(env.BUSINESS_SLUG)}">LocalGenius</a></p>
+  </footer>
+</body>
+</html>\\\`;
+
+    return new Response(html, {
+      headers: {
+        'Content-Type': 'text/html;charset=utf-8',
+        'Cache-Control': 'public, max-age=300, s-maxage=3600',
+      },
     });
   },
 };
