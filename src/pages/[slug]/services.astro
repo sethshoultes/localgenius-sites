@@ -1,0 +1,811 @@
+---
+/**
+ * Professional Services Homepage — [slug]/services.astro
+ *
+ * Sections: Hero, Services, About, Testimonials, Hours & Contact, CTA, Footer
+ * Uses Craft theme design tokens. Hardcoded sample data for "Bright Smile Dental".
+ * Will be wired to D1 later.
+ */
+
+const { slug } = Astro.params;
+
+// --- Sample data: Bright Smile Dental ---
+
+const site = {
+  name: "Bright Smile Dental",
+  tagline: "Your neighborhood dentist since 2012.",
+  phone: "(512) 555-0388",
+  email: "hello@brightsmile.dental",
+  owner: "Dr. Sarah Chen",
+  address: {
+    street: "4521 Guadalupe St",
+    city: "Austin",
+    state: "TX",
+    zip: "78751",
+  },
+  hero: {
+    headline: "Dental care that listens",
+    subheadline: "A neighborhood practice where your comfort matters. From checkups to advanced restorations, we're here for your family's smile.",
+    backgroundImage: "https://images.unsplash.com/photo-1606611013016-969c19f27081?w=1600&q=80",
+    ctaPrimary: { label: "Book Appointment", href: `/${slug}/contact` },
+    ctaSecondary: { label: "New Patients Info", href: `#about` },
+  },
+  services: [
+    {
+      name: "General Dentistry",
+      description: "Preventive care, cleanings, and fillings to keep your smile healthy. Comprehensive exams catch problems early.",
+      icon: "tooth",
+    },
+    {
+      name: "Cosmetic Dentistry",
+      description: "Teeth whitening, veneers, and smile makeovers. Show off the smile you've always wanted.",
+      icon: "sparkles",
+    },
+    {
+      name: "Orthodontics",
+      description: "Braces and clear aligners for all ages. Straight teeth, better health, confident smiles.",
+      icon: "align-center",
+    },
+    {
+      name: "Emergency Dentistry",
+      description: "Same-day care for broken teeth, severe pain, and dental trauma. Available evenings and weekends.",
+      icon: "alert-circle",
+    },
+  ],
+  about: {
+    heading: "Built on trust and skill",
+    body: "Dr. Sarah Chen opened Bright Smile Dental in 2012 with one goal: to make dental care something patients actually look forward to. With over 20 years of experience and continued training in the latest techniques, Dr. Chen combines clinical excellence with a genuine care for her patients' comfort.\n\nWe believe dentistry isn't just about fixing problems — it's about building a relationship. From the moment you call to your last checkup, we listen, explain everything clearly, and treat you like family. Every team member is trained to make you feel welcome and to answer your questions without judgment.\n\nWhether you're in pain, self-conscious about your smile, or just looking for preventive care, we're here. No shame, no rush. Just good dentistry and genuine care.",
+    highlight: "We practice gentle, patient-centered dentistry in a space designed for your comfort.",
+  },
+  reviews: [
+    {
+      quote: "Dr. Chen listened to what I wanted for my smile and made it happen. I came in nervous about a root canal and left feeling relieved. That's the difference a caring dentist makes.",
+      author: "Marcus W.",
+      rating: 5,
+      source: "Google",
+    },
+    {
+      quote: "Been coming here for 5 years with my whole family. The team never makes us feel rushed. My kids actually don't hate going to the dentist anymore. That says everything.",
+      author: "Jennifer L.",
+      rating: 5,
+      source: "Google",
+    },
+    {
+      quote: "Emergency visit on a Friday evening. They got me in, figured out it was just a cracked filling, fixed it, and I was out in 20 minutes. Professional, calm, and no upselling.",
+      author: "Robert T.",
+      rating: 5,
+      source: "Yelp",
+    },
+  ],
+  aggregateRating: { score: 4.9, count: 184, source: "Google" },
+  hours: {
+    monday: "8:00 AM - 5:00 PM",
+    tuesday: "8:00 AM - 5:00 PM",
+    wednesday: "8:00 AM - 5:00 PM",
+    thursday: "8:00 AM - 5:00 PM",
+    friday: "8:00 AM - 5:00 PM",
+    saturday: "9:00 AM - 2:00 PM",
+    sunday: "Closed",
+    notes: "Evening and weekend emergency appointments available with 24-hour notice",
+  },
+  meta: {
+    title: "Bright Smile Dental — Dentist in Austin, TX",
+    description: "Gentle, patient-centered dental care in Austin. General dentistry, cosmetic services, orthodontics. Dr. Sarah Chen. Accepting new patients.",
+  },
+};
+
+function renderStars(rating: number): string {
+  return Array.from({ length: 5 }, (_, i) => i < rating ? '\u2605' : '\u2606').join('');
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{site.meta.title}</title>
+    <meta name="description" content={site.meta.description} />
+    <meta property="og:title" content={site.meta.title} />
+    <meta property="og:description" content={site.meta.description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      /* --------------------------------------------------------
+         Design Tokens — LocalGenius Craft Theme
+         Terracotta accent, Sage secondary, Source Sans 3 body
+         -------------------------------------------------------- */
+      :root {
+        --color-bg-base:        #FAF8F5;
+        --color-bg-elevated:    #ffffff;
+        --color-bg-sunken:      #F2EDE8;
+        --color-surface:        #ffffff;
+        --color-surface-muted:  #F2EDE8;
+        --color-surface-subtle: #E7E5E4;
+        --color-brand:          #C4704B;
+        --color-brand-hover:    #A35535;
+        --color-brand-active:   #8A4429;
+        --color-brand-subtle:   #FDF5F1;
+        --color-brand-muted:    #F5E0D5;
+        --color-text-primary:   #2C2C2C;
+        --color-text-secondary: #6B7280;
+        --color-text-tertiary:  #8390A0;
+        --color-text-inverse:   #ffffff;
+        --color-text-brand:     #A35535;
+        --color-border:         #E7E5E4;
+        --color-border-brand:   #F5E0D5;
+        --color-divider-menu:   #F5E0D5;
+        --color-price:          #A35535;
+        --color-star:           #D4A853;
+        --color-sage:           #7A8B6F;
+        --color-sage-text:      #5C6B52;
+        --color-sage-light:     #E8EDE5;
+        --font-display:         'Lora', 'Georgia', serif;
+        --font-body:            'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
+        --shadow-sm:            0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md:            0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        --shadow-lg:            0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+        --radius-md:            0.5rem;
+        --radius-lg:            0.75rem;
+        --radius-xl:            1rem;
+      }
+
+      /* --------------------------------------------------------
+         Reset & Base
+         -------------------------------------------------------- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html {
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: var(--font-body);
+        color: var(--color-text-primary);
+        background: var(--color-bg-base);
+        line-height: 1.65;
+      }
+
+      img { max-width: 100%; height: auto; display: block; }
+      a { color: var(--color-text-brand); text-decoration: none; }
+      a:hover { color: var(--color-brand-hover); }
+
+      /* --------------------------------------------------------
+         Layout
+         -------------------------------------------------------- */
+      .container {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .section--sunken {
+        background: var(--color-bg-sunken);
+      }
+
+      /* --------------------------------------------------------
+         Nav
+         -------------------------------------------------------- */
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .nav__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 3.5rem;
+      }
+
+      .nav__brand {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--color-text-primary);
+        text-decoration: none;
+      }
+
+      .nav__links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .nav__links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 150ms;
+      }
+
+      .nav__links a:hover {
+        color: var(--color-text-brand);
+      }
+
+      /* --------------------------------------------------------
+         Hero
+         -------------------------------------------------------- */
+      .hero {
+        position: relative;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--color-text-inverse);
+        overflow: hidden;
+        margin-top: 3.5rem;
+      }
+
+      .hero__bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+      }
+
+      .hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(28,25,23,0.4) 0%, rgba(28,25,23,0.7) 100%);
+        z-index: 1;
+      }
+
+      .hero__content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        padding: 2rem 1.25rem;
+      }
+
+      .hero__headline {
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+
+      .hero__subheadline {
+        font-size: 1.125rem;
+        line-height: 1.5;
+        opacity: 0.88;
+        margin-bottom: 2rem;
+      }
+
+      .hero__actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* --------------------------------------------------------
+         Buttons
+         -------------------------------------------------------- */
+      .btn {
+        display: inline-block;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        transition: background 150ms, transform 80ms;
+        cursor: pointer;
+        border: none;
+      }
+
+      .btn:active { transform: scale(0.97); }
+
+      .btn--primary {
+        background: var(--color-brand);
+        color: var(--color-text-inverse);
+      }
+      .btn--primary:hover {
+        background: var(--color-brand-hover);
+        color: var(--color-text-inverse);
+      }
+
+      .btn--outline {
+        background: transparent;
+        color: var(--color-text-inverse);
+        border: 2px solid rgba(255,255,255,0.6);
+      }
+      .btn--outline:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--color-text-inverse);
+      }
+
+      .btn--dark-outline {
+        background: transparent;
+        color: var(--color-text-brand);
+        border: 2px solid var(--color-brand);
+      }
+      .btn--dark-outline:hover {
+        background: var(--color-brand-subtle);
+        color: var(--color-brand-hover);
+      }
+
+      /* --------------------------------------------------------
+         Section Headers
+         -------------------------------------------------------- */
+      .section__label {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-text-brand);
+        margin-bottom: 0.5rem;
+      }
+
+      .section__heading {
+        font-family: var(--font-display);
+        font-size: 1.875rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--color-text-primary);
+        margin-bottom: 1.5rem;
+      }
+
+      /* --------------------------------------------------------
+         Services Grid
+         -------------------------------------------------------- */
+      .services-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .service-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 250ms;
+        border: 1px solid var(--color-border);
+      }
+
+      .service-card:hover {
+        box-shadow: var(--shadow-md);
+        border-color: var(--color-brand-muted);
+      }
+
+      .service-card__name {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin-bottom: 0.75rem;
+      }
+
+      .service-card__description {
+        font-size: 0.9375rem;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+      }
+
+      /* --------------------------------------------------------
+         About
+         -------------------------------------------------------- */
+      .about__grid {
+        display: grid;
+        gap: 2rem;
+      }
+
+      .about__body p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+        line-height: 1.7;
+      }
+
+      .about__highlight {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 1.25rem;
+        color: var(--color-text-brand);
+        border-left: 3px solid var(--color-brand);
+        padding-left: 1.25rem;
+        margin-top: 1rem;
+        line-height: 1.5;
+      }
+
+      /* --------------------------------------------------------
+         Hours & Location
+         -------------------------------------------------------- */
+      .hours-grid {
+        display: grid;
+        gap: 2.5rem;
+      }
+
+      .hours-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .hours-table tr {
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .hours-table td {
+        padding: 0.625rem 0;
+        font-size: 0.9375rem;
+      }
+
+      .hours-table td:first-child {
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+
+      .hours-table td:last-child {
+        text-align: right;
+        color: var(--color-text-secondary);
+      }
+
+      .hours-table .closed {
+        color: var(--color-text-tertiary);
+      }
+
+      .hours-note {
+        font-size: 0.8125rem;
+        color: var(--color-text-tertiary);
+        margin-top: 0.75rem;
+        font-style: italic;
+      }
+
+      .location__address {
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .location__phone {
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+
+      .map-placeholder {
+        width: 100%;
+        height: 240px;
+        background: var(--color-surface-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-tertiary);
+        font-size: 0.875rem;
+        margin-top: 1rem;
+      }
+
+      /* --------------------------------------------------------
+         Reviews
+         -------------------------------------------------------- */
+      .reviews-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .review-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .review-card__stars {
+        color: var(--color-star);
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.08em;
+      }
+
+      .review-card__quote {
+        font-size: 0.9375rem;
+        color: var(--color-text-secondary);
+        line-height: 1.65;
+        margin-bottom: 1rem;
+      }
+
+      .review-card__author {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+
+      .review-card__source {
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .reviews__aggregate {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+
+      .reviews__aggregate strong {
+        color: var(--color-text-primary);
+      }
+
+      /* --------------------------------------------------------
+         CTA Banner
+         -------------------------------------------------------- */
+      .cta-banner {
+        text-align: center;
+        padding: 4rem 1.25rem;
+        background: var(--color-text-primary);
+        color: var(--color-text-inverse);
+      }
+
+      .cta-banner__heading {
+        font-family: var(--font-display);
+        font-size: 1.875rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.75rem;
+      }
+
+      .cta-banner__text {
+        font-size: 1rem;
+        opacity: 0.8;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-banner__actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* --------------------------------------------------------
+         Footer
+         -------------------------------------------------------- */
+      .footer {
+        text-align: center;
+        padding: 2rem 1.25rem;
+        border-top: 1px solid var(--color-border);
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .footer a {
+        color: var(--color-text-tertiary);
+        text-decoration: underline;
+      }
+
+      /* --------------------------------------------------------
+         Responsive — Tablet+
+         -------------------------------------------------------- */
+      @media (min-width: 768px) {
+        .hero__headline {
+          font-size: 3.75rem;
+        }
+
+        .hero__subheadline {
+          font-size: 1.25rem;
+        }
+
+        .section__heading {
+          font-size: 2.25rem;
+        }
+
+        .about__grid {
+          grid-template-columns: 1fr;
+        }
+
+        .services-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hours-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .reviews-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .section {
+          padding: 5rem 0;
+        }
+
+        .cta-banner {
+          padding: 5rem 2rem;
+        }
+
+        .cta-banner__heading {
+          font-size: 2.25rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .services-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .nav__inner {
+          height: 4rem;
+        }
+
+        .hero {
+          margin-top: 4rem;
+        }
+
+        .container {
+          padding: 0 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="container nav__inner">
+        <a href={`/${slug}`} class="nav__brand">{site.name}</a>
+        <ul class="nav__links">
+          <li><a href={`#services`}>Services</a></li>
+          <li><a href={`#contact`}>Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero__bg" style={`background-image: url('${site.hero.backgroundImage}')`}></div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <h1 class="hero__headline">{site.hero.headline}</h1>
+        <p class="hero__subheadline">{site.hero.subheadline}</p>
+        <div class="hero__actions">
+          <a href={site.hero.ctaPrimary.href} class="btn btn--primary">{site.hero.ctaPrimary.label}</a>
+          {site.hero.ctaSecondary && (
+            <a href={site.hero.ctaSecondary.href} class="btn btn--outline">{site.hero.ctaSecondary.label}</a>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section section--sunken" id="services">
+      <div class="container">
+        <p class="section__label">What We Offer</p>
+        <h2 class="section__heading">Our Services</h2>
+        <div class="services-grid">
+          {site.services.map((service: any) => (
+            <div class="service-card">
+              <h3 class="service-card__name">{service.name}</h3>
+              <p class="service-card__description">{service.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <p class="section__label">Our Practice</p>
+        <h2 class="section__heading">{site.about.heading}</h2>
+        <div class="about__grid">
+          <div class="about__body">
+            {site.about.body.split('\n').filter((p: string) => p.trim()).map((paragraph: string) => (
+              <p>{paragraph}</p>
+            ))}
+            {site.about.highlight && (
+              <blockquote class="about__highlight">{site.about.highlight}</blockquote>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section section--sunken" id="reviews">
+      <div class="container">
+        <p class="section__label">What Patients Say</p>
+        <h2 class="section__heading">Patient Testimonials</h2>
+        <div class="reviews-grid">
+          {site.reviews.map((review: any) => (
+            <div class="review-card">
+              <div class="review-card__stars" aria-label={`${review.rating} out of 5 stars`}>
+                {renderStars(review.rating)}
+              </div>
+              <p class="review-card__quote">"{review.quote}"</p>
+              <p class="review-card__author">{review.author}</p>
+              <p class="review-card__source">{review.source}</p>
+            </div>
+          ))}
+        </div>
+        <p class="reviews__aggregate">
+          <span style="color: var(--color-star);">{renderStars(Math.round(site.aggregateRating.score))}</span>
+          {' '}<strong>{site.aggregateRating.score}</strong> out of 5 based on {site.aggregateRating.count} reviews on {site.aggregateRating.source}
+        </p>
+      </div>
+    </section>
+
+    <!-- Hours & Contact -->
+    <section class="section" id="contact">
+      <div class="container">
+        <p class="section__label">Visit Us</p>
+        <h2 class="section__heading">Hours & Location</h2>
+        <div class="hours-grid">
+          <div>
+            <table class="hours-table">
+              {Object.entries({
+                Monday: site.hours.monday,
+                Tuesday: site.hours.tuesday,
+                Wednesday: site.hours.wednesday,
+                Thursday: site.hours.thursday,
+                Friday: site.hours.friday,
+                Saturday: site.hours.saturday,
+                Sunday: site.hours.sunday,
+              }).map(([day, hours]: [string, string]) => (
+                <tr>
+                  <td>{day}</td>
+                  <td class={hours === 'Closed' ? 'closed' : ''}>{hours}</td>
+                </tr>
+              ))}
+            </table>
+            {site.hours.notes && (
+              <p class="hours-note">{site.hours.notes}</p>
+            )}
+          </div>
+          <div>
+            <p class="location__address">
+              {site.address.street}<br />
+              {site.address.city}, {site.address.state} {site.address.zip}
+            </p>
+            <p class="location__phone">
+              <a href={`tel:${site.phone}`}>{site.phone}</a>
+            </p>
+            <div class="map-placeholder" aria-label="Map showing dental practice location">
+              Map embed will go here
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+      <h2 class="cta-banner__heading">New patients welcome. Insurance accepted.</h2>
+      <p class="cta-banner__text">We're accepting new families. Call today to schedule your first visit or complimentary consultation.</p>
+      <div class="cta-banner__actions">
+        <a href={`tel:${site.phone}`} class="btn btn--primary">Call to Book</a>
+        <a href={`/${slug}/contact`} class="btn btn--outline">Request Appointment</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+      <p style="margin-top: 0.5rem; color: var(--color-sage);">Made with <a href="https://localgenius.company" style="color: var(--color-sage-text, #5C6B52); text-decoration: none;">LocalGenius</a></p>
+    </footer>
+
+  </body>
+</html>

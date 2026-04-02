@@ -1,7 +1,13 @@
 ---
-// LocalGenius Sites — Landing / Status Page
-// This is the control plane, not the customer-facing product.
-// Business sites live at {slug}.localgenius.site
+/**
+ * LocalGenius Sites — Root Landing Page
+ *
+ * Serves as both:
+ * 1. A professional landing for anyone who hits the root domain
+ * 2. API reference for the provisioning system
+ *
+ * Business sites live at {slug}.localgenius.site
+ */
 ---
 
 <!doctype html>
@@ -9,26 +15,327 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LocalGenius Sites — Control Plane</title>
+    <title>LocalGenius Sites — Managed Websites for Local Businesses</title>
+    <meta name="description" content="Professional websites for local businesses, built and managed by AI. Live in five minutes." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
     <style>
-      body { font-family: system-ui, sans-serif; max-width: 800px; margin: 80px auto; padding: 0 24px; }
-      h1 { font-size: 2rem; font-weight: 700; }
-      pre { background: #f4f4f4; padding: 16px; border-radius: 8px; overflow: auto; }
-      a { color: #0070f3; }
+      :root {
+        --color-bg: #FAF8F5;
+        --color-surface: #FFFFFF;
+        --color-surface-muted: #F2EDE8;
+        --color-text-primary: #2C2C2C;
+        --color-text-secondary: #6B7280;
+        --color-brand: #C4704B;
+        --color-brand-hover: #A35535;
+        --color-brand-light: #F5E0D5;
+        --color-sage: #7A8B6F;
+        --color-sage-light: #E8EDE5;
+        --color-border: #E7E5E4;
+        --font-display: 'Lora', Georgia, serif;
+        --font-body: 'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { -webkit-font-smoothing: antialiased; }
+      body {
+        font-family: var(--font-body);
+        background: var(--color-bg);
+        color: var(--color-text-primary);
+        line-height: 1.6;
+      }
+
+      .container { max-width: 800px; margin: 0 auto; padding: 0 1.5rem; }
+
+      /* Header */
+      .header {
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+      }
+      .logo-mark {
+        width: 2rem;
+        height: 2rem;
+        background: var(--color-brand);
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.875rem;
+      }
+      .logo-text {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+      }
+      .logo-badge {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: var(--color-sage);
+        background: var(--color-sage-light);
+        padding: 0.125rem 0.5rem;
+        border-radius: 9999px;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 4rem 0 3rem;
+        text-align: center;
+      }
+      .hero h1 {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+      .hero h1 em {
+        color: var(--color-brand);
+        font-style: normal;
+      }
+      .hero p {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        max-width: 32rem;
+        margin: 0 auto 2rem;
+      }
+      .hero-cta {
+        display: inline-block;
+        background: var(--color-brand);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        transition: background 150ms;
+      }
+      .hero-cta:hover { background: var(--color-brand-hover); }
+
+      /* How it works */
+      .steps {
+        padding: 3rem 0;
+        border-top: 1px solid var(--color-border);
+      }
+      .steps h2 {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      .steps-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+      @media (min-width: 640px) {
+        .steps-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+      .step {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        background: var(--color-brand-light);
+        color: var(--color-brand);
+        font-weight: 700;
+        font-size: 0.875rem;
+        border-radius: 9999px;
+        margin-bottom: 0.75rem;
+      }
+      .step h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .step p {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+      }
+
+      /* API Reference */
+      .api-ref {
+        padding: 3rem 0;
+        border-top: 1px solid var(--color-border);
+      }
+      .api-ref h2 {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
+      .api-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+      }
+      .api-table th {
+        text-align: left;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid var(--color-border);
+        color: var(--color-text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .api-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        vertical-align: top;
+      }
+      .method {
+        font-weight: 600;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+      }
+      .method-post { color: var(--color-brand); }
+      .method-get { color: var(--color-sage); }
+      .endpoint {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8125rem;
+        color: var(--color-text-primary);
+      }
+
+      /* Footer */
+      .footer {
+        padding: 2rem 0;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+      }
+      .footer p {
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+      }
+      .footer a {
+        color: var(--color-sage);
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
-    <h1>LocalGenius Sites</h1>
-    <p>Emdash-powered website builder on Cloudflare Workers + D1 + R2.</p>
-    <p>Each provisioned site lives at <code>{slug}.localgenius.site</code>.</p>
-    <h2>API Endpoints</h2>
-    <pre>
-POST /api/provision       — Provision a new business site
-GET  /api/sites           — List all provisioned sites
-GET  /api/sites/:slug     — Get site status
-POST /api/sites/:slug/update — Send content update via MCP
-    </pre>
-    <h2>Documentation</h2>
-    <p><a href="/api/provision">Provision API</a> — Requires CLOUDFLARE_API_TOKEN header.</p>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo">
+          <div class="logo-mark">L</div>
+          <span class="logo-text">LocalGenius Sites</span>
+          <span class="logo-badge">Beta</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <h1>Your business, <em>live in five minutes.</em></h1>
+        <p>
+          Professional websites for local businesses — built by AI, hosted on the edge,
+          managed through conversation. No CMS. No drag-and-drop. Just tell us what you need.
+        </p>
+        <a href="https://localgenius.company/welcome" class="hero-cta">Get started</a>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="steps">
+      <div class="container">
+        <h2>How it works</h2>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Tell us about your business</h3>
+            <p>Name, type, location, and a few photos. Takes about two minutes.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>We build your site</h3>
+            <p>AI writes your copy, arranges your photos, and deploys a real website.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Talk to update it</h3>
+            <p>"Add brunch to my menu." Your site changes. No editor, no login, no CMS.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- API Reference -->
+    <section class="api-ref">
+      <div class="container">
+        <h2>API Reference</h2>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="method method-post">POST</span></td>
+              <td><span class="endpoint">/api/provision</span></td>
+              <td>Provision a new business site (D1 + R2 + Worker + DNS)</td>
+            </tr>
+            <tr>
+              <td><span class="method method-get">GET</span></td>
+              <td><span class="endpoint">/api/sites</span></td>
+              <td>List all provisioned sites</td>
+            </tr>
+            <tr>
+              <td><span class="method method-get">GET</span></td>
+              <td><span class="endpoint">/api/sites/:slug</span></td>
+              <td>Get site status and metadata</td>
+            </tr>
+            <tr>
+              <td><span class="method method-post">POST</span></td>
+              <td><span class="endpoint">/api/update</span></td>
+              <td>Send natural language content update via MCP</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.8125rem; color: var(--color-text-secondary); margin-top: 1rem;">
+          All endpoints require <code>Authorization: Bearer &lt;token&gt;</code>. Sites are served at
+          <code>{'{slug}'}.localgenius.site</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>
+          <a href="https://localgenius.company">LocalGenius</a> &middot;
+          Managed websites on Cloudflare Workers &middot;
+          Austin, TX
+        </p>
+      </div>
+    </footer>
+
   </body>
 </html>
