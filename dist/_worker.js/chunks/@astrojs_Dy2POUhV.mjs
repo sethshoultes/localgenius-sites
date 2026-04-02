@@ -1,5 +1,5 @@
 globalThis.process ??= {}; globalThis.process.env ??= {};
-import { A as App } from './astro_DcMjRC-Q.mjs';
+import { A as App } from './astro_BceOcufW.mjs';
 
 function createExports(manifest) {
   const app = new App(manifest);

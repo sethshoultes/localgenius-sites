@@ -1,0 +1,87 @@
+---
+interface Props {
+  rating: number;
+  count?: number;
+}
+
+const { rating, count } = Astro.props;
+
+// Clamp rating between 0 and 5
+const clampedRating = Math.max(0, Math.min(5, rating));
+const fullStars = Math.floor(clampedRating);
+const hasHalf = clampedRating - fullStars >= 0.5;
+const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+---
+
+<span class="star-rating" aria-label={`${clampedRating} out of 5 stars${count !== undefined ? `, ${count} reviews` : ''}`}>
+  <span class="stars" aria-hidden="true">
+    {Array.from({ length: fullStars }).map(() => (
+      <span class="star star-full" />
+    ))}
+    {hasHalf && <span class="star star-half" />}
+    {Array.from({ length: emptyStars }).map(() => (
+      <span class="star star-empty" />
+    ))}
+  </span>
+  {count !== undefined && (
+    <span class="star-count">({count})</span>
+  )}
+</span>
+
+<style>
+  .star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .star {
+    display: inline-block;
+    width: 1.125em;
+    height: 1.125em;
+    position: relative;
+  }
+
+  /* Base star shape via CSS clip-path */
+  .star::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #d6d3d1;
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+  }
+
+  .star-full::before {
+    background-color: #D4A853;
+  }
+
+  .star-half::before {
+    background: linear-gradient(to right, #D4A853 50%, #d6d3d1 50%);
+  }
+
+  .star-empty::before {
+    background-color: #d6d3d1;
+  }
+
+  .star-count {
+    font-size: 0.875em;
+    color: var(--color-text-secondary, #78716c);
+    font-weight: 400;
+  }
+</style>

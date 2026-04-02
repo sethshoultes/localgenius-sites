@@ -1,0 +1,519 @@
+---
+/**
+ * Restaurant Full Menu — [slug]/menu.astro
+ *
+ * Categories with items, descriptions, prices, and category photos.
+ * Hardcoded sample data for "Maria's Kitchen".
+ * Uses Craft theme design tokens.
+ */
+
+const { slug } = Astro.params;
+
+const site = {
+  name: "Maria's Kitchen",
+  phone: "(773) 555-0142",
+  meta: {
+    title: "Menu — Maria's Kitchen",
+    description: "Full menu for Maria's Kitchen. Handmade Mexican food in Logan Square, Chicago. Mole, carnitas, tamales, and more.",
+  },
+  menu: {
+    heading: "Our Menu",
+    note: "Menu changes seasonally. Prices subject to change. Ask your server about daily specials.",
+    categories: [
+      {
+        name: "Starters",
+        description: "Small plates to share or keep for yourself",
+        image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=800&q=80",
+        items: [
+          { name: "Guacamole Molcajete", description: "Made tableside with avocado, serrano, cilantro, lime. Served with warm tortilla chips.", price: "12", dietary: ["vegan", "gluten-free"] },
+          { name: "Elote Asado", description: "Grilled street corn with crema, cotija, chile powder, and a squeeze of lime", price: "7", dietary: ["vegetarian", "gluten-free"] },
+          { name: "Queso Fundido", description: "Melted Oaxacan cheese with roasted poblano and chorizo, served bubbling in a cast-iron dish", price: "11" },
+          { name: "Ceviche Tostadas", description: "Citrus-cured shrimp with cucumber, red onion, avocado on crisp corn tostada", price: "14", dietary: ["gluten-free"] },
+          { name: "Sopa de Tortilla", description: "Tomato-chile broth with crispy tortilla strips, avocado, crema, and queso fresco", price: "9", dietary: ["vegetarian"] },
+        ],
+      },
+      {
+        name: "Tacos",
+        description: "Served on handmade corn tortillas, three per order",
+        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&q=80",
+        items: [
+          { name: "Carnitas", description: "Slow-braised pork shoulder with pickled onion, cilantro, and salsa verde", price: "15" },
+          { name: "Al Pastor", description: "Achiote-marinated pork, roasted pineapple, white onion, cilantro", price: "15" },
+          { name: "Pollo Asado", description: "Charcoal-grilled chicken thigh, guajillo salsa, shaved cabbage", price: "14" },
+          { name: "Hongos", description: "Sauteed wild mushrooms, epazote, queso Oaxaca, chipotle crema", price: "13", dietary: ["vegetarian"] },
+          { name: "Pescado", description: "Beer-battered cod, pickled cabbage, chipotle aioli, lime", price: "16" },
+        ],
+      },
+      {
+        name: "Entrees",
+        description: "Plates served with rice, beans, and handmade tortillas",
+        image: "https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=800&q=80",
+        items: [
+          { name: "Mole Poblano", description: "Slow-simmered with 22 ingredients, served over chicken with handmade tortillas", price: "19" },
+          { name: "Carnitas Plate", description: "Fourteen-hour braised pork shoulder, crispy edges, pickled onion, cilantro rice", price: "17" },
+          { name: "Enchiladas Suizas", description: "Chicken enchiladas in creamy tomatillo sauce, topped with crema and queso fresco", price: "16" },
+          { name: "Chile Relleno", description: "Roasted poblano stuffed with cheese, dipped in egg batter, topped with ranchero sauce", price: "15", dietary: ["vegetarian"] },
+          { name: "Carne Asada", description: "Grilled skirt steak, charred spring onions, guacamole, warm tortillas", price: "22" },
+          { name: "Camarones al Mojo de Ajo", description: "Garlic-butter shrimp with rice, grilled vegetables, and lime", price: "21", dietary: ["gluten-free"] },
+        ],
+      },
+      {
+        name: "Tamales",
+        description: "Steamed in banana leaf, made fresh each morning",
+        image: "https://images.unsplash.com/photo-1604467707321-70d009801bf9?w=800&q=80",
+        items: [
+          { name: "Chicken Tinga (3)", description: "Shredded chicken in smoky chipotle-tomato sauce", price: "14" },
+          { name: "Rajas con Queso (3)", description: "Roasted poblano strips with melted Oaxacan cheese", price: "13", dietary: ["vegetarian"] },
+          { name: "Black Bean (3)", description: "Seasoned black bean with epazote and salsa verde", price: "12", dietary: ["vegan"] },
+          { name: "Mixed Plate (6)", description: "Two of each — perfect for sharing", price: "22" },
+        ],
+      },
+      {
+        name: "Desserts",
+        description: "Something sweet to finish",
+        image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=800&q=80",
+        items: [
+          { name: "Churros con Cajeta", description: "Crisp cinnamon dough with warm goat-milk caramel for dipping", price: "9" },
+          { name: "Tres Leches", description: "Three-milk sponge cake, whipped cream, toasted coconut", price: "10" },
+          { name: "Flan de Vainilla", description: "Classic egg custard with burnt caramel sauce", price: "8" },
+          { name: "Helado del Dia", description: "House-made ice cream — ask your server for today's flavor", price: "7" },
+        ],
+      },
+      {
+        name: "Drinks",
+        description: "Handmade aguas frescas, Mexican sodas, and more",
+        image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=800&q=80",
+        items: [
+          { name: "Agua de Horchata", description: "Rice milk with cinnamon and vanilla, served over ice", price: "5", dietary: ["vegan"] },
+          { name: "Agua de Jamaica", description: "Hibiscus flower tea, lightly sweetened, chilled", price: "5", dietary: ["vegan"] },
+          { name: "Jarritos", description: "Mexican soda — tamarind, mandarin, guava, or lime", price: "4" },
+          { name: "Mexican Hot Chocolate", description: "Oaxacan chocolate, cinnamon, warm milk, frothed tableside", price: "6" },
+          { name: "Cafe de Olla", description: "Clay-pot coffee with piloncillo and cinnamon", price: "5" },
+        ],
+      },
+    ],
+  },
+};
+
+function dietaryLabel(tag: string): string {
+  const labels: Record<string, string> = {
+    'vegan': 'V',
+    'vegetarian': 'VG',
+    'gluten-free': 'GF',
+    'dairy-free': 'DF',
+    'contains-nuts': 'N',
+    'spicy': 'S',
+  };
+  return labels[tag] || tag;
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{site.meta.title}</title>
+    <meta name="description" content={site.meta.description} />
+    <meta property="og:title" content={site.meta.title} />
+    <meta property="og:description" content={site.meta.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* --------------------------------------------------------
+         Design Tokens (Craft Theme)
+         -------------------------------------------------------- */
+      :root {
+        --color-bg-base:        #fafaf9;
+        --color-bg-elevated:    #ffffff;
+        --color-bg-sunken:      #f5f5f4;
+        --color-surface:        #ffffff;
+        --color-surface-muted:  #f5f5f4;
+        --color-surface-subtle: #e7e5e4;
+        --color-brand:          #d97706;
+        --color-brand-hover:    #b45309;
+        --color-brand-subtle:   #fffbeb;
+        --color-brand-muted:    #fef3c7;
+        --color-text-primary:   #1c1917;
+        --color-text-secondary: #57534e;
+        --color-text-tertiary:  #a8a29e;
+        --color-text-inverse:   #ffffff;
+        --color-text-brand:     #b45309;
+        --color-border:         #e7e5e4;
+        --color-border-brand:   #fcd34d;
+        --color-divider-menu:   #fde68a;
+        --color-price:          #b45309;
+        --font-display:         'Lora', 'Georgia', serif;
+        --font-body:            'Inter', 'system-ui', sans-serif;
+        --shadow-sm:            0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md:            0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        --radius-md:            0.5rem;
+        --radius-lg:            0.75rem;
+      }
+
+      /* --------------------------------------------------------
+         Reset & Base
+         -------------------------------------------------------- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+      body {
+        font-family: var(--font-body);
+        color: var(--color-text-primary);
+        background: var(--color-bg-base);
+        line-height: 1.65;
+      }
+      img { max-width: 100%; height: auto; display: block; }
+      a { color: var(--color-text-brand); text-decoration: none; }
+      a:hover { color: var(--color-brand-hover); }
+
+      /* --------------------------------------------------------
+         Layout
+         -------------------------------------------------------- */
+      .container {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      /* --------------------------------------------------------
+         Nav
+         -------------------------------------------------------- */
+      .nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .nav__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 3.5rem;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      .nav__brand {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--color-text-primary);
+        text-decoration: none;
+      }
+
+      .nav__links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .nav__links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        transition: color 150ms;
+      }
+
+      .nav__links a:hover { color: var(--color-text-brand); }
+
+      .nav__links .active {
+        color: var(--color-text-brand);
+      }
+
+      /* --------------------------------------------------------
+         Page Header
+         -------------------------------------------------------- */
+      .page-header {
+        padding: 6rem 0 2.5rem;
+        text-align: center;
+        margin-top: 3.5rem;
+      }
+
+      .page-header__title {
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+      }
+
+      .page-header__subtitle {
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* --------------------------------------------------------
+         Menu Category
+         -------------------------------------------------------- */
+      .menu-category {
+        padding: 3rem 0;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .menu-category:last-child {
+        border-bottom: none;
+      }
+
+      .menu-category__header {
+        display: grid;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .menu-category__image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: var(--radius-lg);
+      }
+
+      .menu-category__name {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .menu-category__desc {
+        font-size: 0.875rem;
+        color: var(--color-text-tertiary);
+        font-style: italic;
+      }
+
+      /* --------------------------------------------------------
+         Menu Item
+         -------------------------------------------------------- */
+      .menu-items {
+        list-style: none;
+      }
+
+      .menu-item {
+        padding: 1rem 0;
+        border-bottom: 1px dashed var(--color-divider-menu);
+      }
+
+      .menu-item:last-child {
+        border-bottom: none;
+      }
+
+      .menu-item__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .menu-item__name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--color-text-primary);
+      }
+
+      .menu-item__price {
+        font-weight: 600;
+        color: var(--color-price);
+        white-space: nowrap;
+        font-size: 0.9375rem;
+      }
+
+      .menu-item__desc {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+      }
+
+      .menu-item__tags {
+        display: flex;
+        gap: 0.375rem;
+        margin-top: 0.375rem;
+      }
+
+      .menu-item__tag {
+        font-size: 0.625rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.25rem;
+        background: var(--color-brand-muted);
+        color: var(--color-brand-hover);
+        text-transform: uppercase;
+      }
+
+      /* --------------------------------------------------------
+         Menu Note
+         -------------------------------------------------------- */
+      .menu-note {
+        text-align: center;
+        padding: 2rem 0 3rem;
+        font-size: 0.8125rem;
+        color: var(--color-text-tertiary);
+        font-style: italic;
+      }
+
+      /* --------------------------------------------------------
+         Dietary Legend
+         -------------------------------------------------------- */
+      .dietary-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        padding: 1.5rem 0;
+        border-top: 1px solid var(--color-border);
+        margin-top: 1rem;
+      }
+
+      .dietary-legend__item {
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .dietary-legend__item span {
+        display: inline-block;
+        font-size: 0.625rem;
+        font-weight: 600;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.25rem;
+        background: var(--color-brand-muted);
+        color: var(--color-brand-hover);
+        text-transform: uppercase;
+        margin-right: 0.25rem;
+      }
+
+      /* --------------------------------------------------------
+         Footer
+         -------------------------------------------------------- */
+      .footer {
+        text-align: center;
+        padding: 2rem 1.25rem;
+        border-top: 1px solid var(--color-border);
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .footer a {
+        color: var(--color-text-tertiary);
+        text-decoration: underline;
+      }
+
+      /* --------------------------------------------------------
+         Responsive
+         -------------------------------------------------------- */
+      @media (min-width: 768px) {
+        .page-header__title {
+          font-size: 3rem;
+        }
+
+        .menu-category__header {
+          grid-template-columns: 240px 1fr;
+          align-items: center;
+        }
+
+        .menu-category__image {
+          height: 160px;
+        }
+
+        .container {
+          padding: 0 2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .nav__inner { height: 4rem; }
+        .page-header { margin-top: 4rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="nav__inner">
+        <a href={`/${slug}`} class="nav__brand">{site.name}</a>
+        <ul class="nav__links">
+          <li><a href={`/${slug}/menu`} class="active">Menu</a></li>
+          <li><a href={`/${slug}/contact`}>Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-header__title">{site.menu.heading}</h1>
+      <p class="page-header__subtitle">Handmade Mexican food, made from scratch every day</p>
+    </header>
+
+    <!-- Menu Categories -->
+    <main class="container">
+      {site.menu.categories.map((category) => (
+        <section class="menu-category">
+          <div class="menu-category__header">
+            <img
+              src={category.image}
+              alt={category.name}
+              class="menu-category__image"
+              loading="lazy"
+              width="800"
+              height="400"
+            />
+            <div>
+              <h2 class="menu-category__name">{category.name}</h2>
+              {category.description && (
+                <p class="menu-category__desc">{category.description}</p>
+              )}
+            </div>
+          </div>
+          <ul class="menu-items">
+            {category.items.map((item) => (
+              <li class="menu-item">
+                <div class="menu-item__top">
+                  <span class="menu-item__name">{item.name}</span>
+                  <span class="menu-item__price">${item.price}</span>
+                </div>
+                {item.description && (
+                  <p class="menu-item__desc">{item.description}</p>
+                )}
+                {item.dietary && item.dietary.length > 0 && (
+                  <div class="menu-item__tags">
+                    {item.dietary.map((tag: string) => (
+                      <span class="menu-item__tag">{dietaryLabel(tag)}</span>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <!-- Dietary Legend -->
+      <div class="dietary-legend">
+        <span class="dietary-legend__item"><span>V</span> Vegan</span>
+        <span class="dietary-legend__item"><span>VG</span> Vegetarian</span>
+        <span class="dietary-legend__item"><span>GF</span> Gluten-Free</span>
+        <span class="dietary-legend__item"><span>DF</span> Dairy-Free</span>
+      </div>
+
+      {site.menu.note && (
+        <p class="menu-note">{site.menu.note}</p>
+      )}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Made with <a href="https://localgenius.site">LocalGenius</a></p>
+    </footer>
+
+  </body>
+</html>

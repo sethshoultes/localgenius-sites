@@ -9,6 +9,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "wrangler deploy",
+    "deploy:prod": "bash scripts/deploy.sh",
+    "deploy:staging": "bash scripts/deploy.sh --staging",
+    "db:migrate": "bash scripts/migrate.sh",
+    "db:migrate:local": "bash scripts/migrate.sh --local",
     "cf-typegen": "wrangler types",
     "test": "vitest run"
   },

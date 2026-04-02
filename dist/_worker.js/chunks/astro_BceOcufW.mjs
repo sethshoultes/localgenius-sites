@@ -6651,4 +6651,4 @@ const noop = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: noop_default
 }, Symbol.toStringTag, { value: 'Module' }));
 
-export { App as A, renderHead as a, renderTemplate as b, createComponent as c, deserializeManifest as d, page as p, renderers as r };
+export { App as A, addAttribute as a, renderHead as b, createComponent as c, deserializeManifest as d, renderTemplate as e, createAstro as f, page as p, renderers as r };

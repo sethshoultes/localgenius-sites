@@ -84,6 +84,33 @@ const primitive = {
     700: '#15803d',
   },
 
+  // LocalGenius brand palette — the DNA that ties sites back to the product
+  terracotta: {
+    50:  '#FDF5F1',
+    100: '#F5E0D5',
+    200: '#EBCAB5',
+    300: '#D9A886',
+    400: '#C4704B',
+    500: '#A35535',
+    600: '#8A4429',
+    700: '#6E341F',
+    800: '#542818',
+    900: '#3D1D12',
+  },
+
+  sage: {
+    50:  '#F4F6F2',
+    100: '#E8EDE5',
+    200: '#D1DBC9',
+    300: '#B0C0A3',
+    400: '#7A8B6F',
+    500: '#5C6B52',
+    600: '#4A5642',
+    700: '#3A4434',
+    800: '#2C3328',
+    900: '#1E221C',
+  },
+
   // Pure values
   white: '#ffffff',
   black: '#000000',
@@ -100,7 +127,7 @@ export const typography = {
   fontFamily: {
     craft: {
       display: "'Lora', 'Georgia', serif",
-      body:    "'Inter', 'system-ui', sans-serif",
+      body:    "'Source Sans 3', 'Source Sans Pro', 'Inter', system-ui, sans-serif",
     },
     professional: {
       display: "'Inter', 'system-ui', sans-serif",
@@ -268,13 +295,13 @@ export const craftTheme = {
       subtle:   primitive.stone[200],
     },
 
-    // Brand — amber anchors the palette in warmth
+    // Brand — terracotta anchors the palette in warmth, ties back to LocalGenius
     brand: {
-      default:  primitive.amber[600],
-      hover:    primitive.amber[700],
-      active:   primitive.amber[800],
-      subtle:   primitive.amber[50],
-      muted:    primitive.amber[100],
+      default:  primitive.terracotta[400],  // #C4704B
+      hover:    primitive.terracotta[500],  // #A35535
+      active:   primitive.terracotta[600],
+      subtle:   primitive.terracotta[50],
+      muted:    primitive.terracotta[100],  // #F5E0D5
     },
 
     // Text hierarchy
@@ -283,9 +310,9 @@ export const craftTheme = {
       secondary: primitive.stone[600],
       tertiary:  primitive.stone[400],
       inverse:   primitive.white,
-      brand:     primitive.amber[700],
-      link:      primitive.amber[700],
-      linkHover: primitive.amber[800],
+      brand:     primitive.terracotta[500],
+      link:      primitive.terracotta[500],
+      linkHover: primitive.terracotta[600],
     },
 
     // Borders
@@ -293,15 +320,25 @@ export const craftTheme = {
       default: primitive.stone[200],
       muted:   primitive.stone[100],
       strong:  primitive.stone[300],
-      brand:   primitive.amber[300],
+      brand:   primitive.terracotta[200],
     },
 
-    // Semantic states
+    // Semantic states — sage for success (ties to LocalGenius brand)
     success: {
-      default: primitive.green[600],
-      subtle:  primitive.green[50],
-      muted:   primitive.green[100],
+      default: primitive.sage[400],   // #7A8B6F
+      subtle:  primitive.sage[50],
+      muted:   primitive.sage[100],   // #E8EDE5
+      text:    primitive.sage[500],   // #5C6B52
     },
+
+    // LocalGenius branding whisper
+    localgenius: {
+      text:    primitive.sage[400],
+      subtle:  primitive.sage[100],
+    },
+
+    // Rating stars
+    star: primitive.amber[400],  // #fbbf24 — gold stays gold
   },
 
   typography: {
@@ -328,13 +365,13 @@ export const craftTheme = {
       sublineColor:    'rgba(255,255,255,0.88)',
     },
     menu: {
-      dividerColor:    primitive.amber[200],
-      priceColor:      primitive.amber[700],
+      dividerColor:    primitive.terracotta[100],
+      priceColor:      primitive.terracotta[500],
       categoryFont:    typography.fontFamily.craft.display,
     },
     hours: {
       dayFont:         typography.fontFamily.craft.body,
-      highlightColor:  primitive.amber[600],
+      highlightColor:  primitive.terracotta[400],
     },
   },
 } as const;

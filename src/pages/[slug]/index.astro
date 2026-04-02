@@ -1,0 +1,815 @@
+---
+/**
+ * Restaurant Homepage — [slug]/index.astro
+ *
+ * Sections: Hero, About, Menu Highlights, Hours & Location, Reviews, CTA, Footer
+ * Uses Craft theme design tokens. Hardcoded sample data for "Maria's Kitchen".
+ * Will be wired to D1 later.
+ */
+
+const { slug } = Astro.params;
+
+// --- Sample data: Maria's Kitchen ---
+
+const site = {
+  name: "Maria's Kitchen",
+  tagline: "Handmade pasta in the heart of Logan Square since 1998",
+  phone: "(773) 555-0142",
+  email: "hello@mariaskitchen.com",
+  address: {
+    street: "2847 N. Milwaukee Ave",
+    city: "Chicago",
+    state: "IL",
+    zip: "60647",
+  },
+  hero: {
+    headline: "Where the noodles are rolled before the sun comes up",
+    subheadline: "Family recipes from Oaxaca, made fresh daily. Walk-ins welcome.",
+    backgroundImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80",
+    ctaPrimary: { label: "View Our Menu", href: `/${slug}/menu` },
+    ctaSecondary: { label: "Book a Table", href: `/${slug}/contact` },
+  },
+  about: {
+    heading: "Three generations of the same red sauce",
+    body: "When my grandmother came to Chicago in 1972, she carried two things: her cast-iron comal and a notebook of recipes written in pencil. Maria's Kitchen started as weekend tamales sold from our front porch. Twenty-six years later, we are still cooking from that same notebook.\n\nWe make everything by hand — the tortillas, the mole, the carnitas that take fourteen hours. Nothing comes from a can, nothing from a freezer. If we run out, we run out. That is the only way we know how to do it.",
+    highlight: "Every dish made from scratch, every day, no exceptions.",
+  },
+  menuHighlights: [
+    { name: "Mole Poblano", description: "Slow-simmered with 22 ingredients, served over chicken with handmade tortillas", price: "19", image: "https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?w=600&q=80" },
+    { name: "Carnitas Plate", description: "Fourteen-hour braised pork shoulder, crispy edges, pickled onion, cilantro rice", price: "17", image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600&q=80" },
+    { name: "Tamales (3)", description: "Corn masa steamed in banana leaf — chicken tinga, rajas, or black bean", price: "14", image: "https://images.unsplash.com/photo-1604467707321-70d009801bf9?w=600&q=80" },
+    { name: "Churros con Cajeta", description: "Crisp cinnamon dough with warm goat-milk caramel for dipping", price: "9", image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600&q=80" },
+  ],
+  hours: {
+    monday: "Closed",
+    tuesday: "11:00 AM - 9:00 PM",
+    wednesday: "11:00 AM - 9:00 PM",
+    thursday: "11:00 AM - 9:00 PM",
+    friday: "11:00 AM - 10:00 PM",
+    saturday: "10:00 AM - 10:00 PM",
+    sunday: "10:00 AM - 8:00 PM",
+    notes: "Kitchen closes 30 minutes before close",
+  },
+  reviews: [
+    { quote: "The mole here is unlike anything else in the city. You can taste the hours that went into it. We drive 45 minutes and it is always worth it.", author: "Rosa M.", rating: 5, source: "Google" },
+    { quote: "My family has been coming every Sunday for three years. The tamales remind my mother of home, and that says everything.", author: "Carlos D.", rating: 5, source: "Google" },
+    { quote: "Unpretentious, honest, and absolutely delicious. The carnitas plate is the best I have had outside of Mexico.", author: "James T.", rating: 5, source: "Yelp" },
+  ],
+  aggregateRating: { score: 4.8, count: 247, source: "Google" },
+  meta: {
+    title: "Maria's Kitchen — Mexican Restaurant in Chicago",
+    description: "Handmade Mexican food in Logan Square. Mole, carnitas, tamales made from scratch daily. Walk-ins welcome. Open Tue-Sun.",
+  },
+};
+
+function renderStars(rating: number): string {
+  return Array.from({ length: 5 }, (_, i) => i < rating ? '\u2605' : '\u2606').join('');
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{site.meta.title}</title>
+    <meta name="description" content={site.meta.description} />
+    <meta property="og:title" content={site.meta.title} />
+    <meta property="og:description" content={site.meta.description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* --------------------------------------------------------
+         Design Tokens (Craft Theme)
+         -------------------------------------------------------- */
+      :root {
+        --color-bg-base:        #fafaf9;
+        --color-bg-elevated:    #ffffff;
+        --color-bg-sunken:      #f5f5f4;
+        --color-surface:        #ffffff;
+        --color-surface-muted:  #f5f5f4;
+        --color-surface-subtle: #e7e5e4;
+        --color-brand:          #d97706;
+        --color-brand-hover:    #b45309;
+        --color-brand-active:   #92400e;
+        --color-brand-subtle:   #fffbeb;
+        --color-brand-muted:    #fef3c7;
+        --color-text-primary:   #1c1917;
+        --color-text-secondary: #57534e;
+        --color-text-tertiary:  #a8a29e;
+        --color-text-inverse:   #ffffff;
+        --color-text-brand:     #b45309;
+        --color-border:         #e7e5e4;
+        --color-border-brand:   #fcd34d;
+        --color-divider-menu:   #fde68a;
+        --color-price:          #b45309;
+        --color-star:           #f59e0b;
+        --font-display:         'Lora', 'Georgia', serif;
+        --font-body:            'Inter', 'system-ui', sans-serif;
+        --shadow-sm:            0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md:            0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        --shadow-lg:            0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+        --radius-md:            0.5rem;
+        --radius-lg:            0.75rem;
+        --radius-xl:            1rem;
+      }
+
+      /* --------------------------------------------------------
+         Reset & Base
+         -------------------------------------------------------- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html {
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: var(--font-body);
+        color: var(--color-text-primary);
+        background: var(--color-bg-base);
+        line-height: 1.65;
+      }
+
+      img { max-width: 100%; height: auto; display: block; }
+      a { color: var(--color-text-brand); text-decoration: none; }
+      a:hover { color: var(--color-brand-hover); }
+
+      /* --------------------------------------------------------
+         Layout
+         -------------------------------------------------------- */
+      .container {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .section--sunken {
+        background: var(--color-bg-sunken);
+      }
+
+      /* --------------------------------------------------------
+         Nav
+         -------------------------------------------------------- */
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .nav__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 3.5rem;
+      }
+
+      .nav__brand {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--color-text-primary);
+        text-decoration: none;
+      }
+
+      .nav__links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .nav__links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color 150ms;
+      }
+
+      .nav__links a:hover {
+        color: var(--color-text-brand);
+      }
+
+      /* --------------------------------------------------------
+         Hero
+         -------------------------------------------------------- */
+      .hero {
+        position: relative;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--color-text-inverse);
+        overflow: hidden;
+        margin-top: 3.5rem;
+      }
+
+      .hero__bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+      }
+
+      .hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(28,25,23,0.4) 0%, rgba(28,25,23,0.7) 100%);
+        z-index: 1;
+      }
+
+      .hero__content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        padding: 2rem 1.25rem;
+      }
+
+      .hero__headline {
+        font-family: var(--font-display);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+
+      .hero__subheadline {
+        font-size: 1.125rem;
+        line-height: 1.5;
+        opacity: 0.88;
+        margin-bottom: 2rem;
+      }
+
+      .hero__actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* --------------------------------------------------------
+         Buttons
+         -------------------------------------------------------- */
+      .btn {
+        display: inline-block;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.75rem 1.75rem;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        transition: background 150ms, transform 80ms;
+        cursor: pointer;
+        border: none;
+      }
+
+      .btn:active { transform: scale(0.97); }
+
+      .btn--primary {
+        background: var(--color-brand);
+        color: var(--color-text-inverse);
+      }
+      .btn--primary:hover {
+        background: var(--color-brand-hover);
+        color: var(--color-text-inverse);
+      }
+
+      .btn--outline {
+        background: transparent;
+        color: var(--color-text-inverse);
+        border: 2px solid rgba(255,255,255,0.6);
+      }
+      .btn--outline:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--color-text-inverse);
+      }
+
+      .btn--dark-outline {
+        background: transparent;
+        color: var(--color-text-brand);
+        border: 2px solid var(--color-brand);
+      }
+      .btn--dark-outline:hover {
+        background: var(--color-brand-subtle);
+        color: var(--color-brand-hover);
+      }
+
+      /* --------------------------------------------------------
+         Section Headers
+         -------------------------------------------------------- */
+      .section__label {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--color-text-brand);
+        margin-bottom: 0.5rem;
+      }
+
+      .section__heading {
+        font-family: var(--font-display);
+        font-size: 1.875rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--color-text-primary);
+        margin-bottom: 1.5rem;
+      }
+
+      /* --------------------------------------------------------
+         About
+         -------------------------------------------------------- */
+      .about__grid {
+        display: grid;
+        gap: 2rem;
+      }
+
+      .about__body p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+        line-height: 1.7;
+      }
+
+      .about__highlight {
+        font-family: var(--font-display);
+        font-style: italic;
+        font-size: 1.25rem;
+        color: var(--color-text-brand);
+        border-left: 3px solid var(--color-brand);
+        padding-left: 1.25rem;
+        margin-top: 1rem;
+        line-height: 1.5;
+      }
+
+      /* --------------------------------------------------------
+         Menu Highlights
+         -------------------------------------------------------- */
+      .menu-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .menu-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 250ms;
+      }
+
+      .menu-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .menu-card__image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .menu-card__body {
+        padding: 1.25rem;
+      }
+
+      .menu-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 0.5rem;
+      }
+
+      .menu-card__name {
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .menu-card__price {
+        font-weight: 600;
+        color: var(--color-price);
+        font-size: 1rem;
+      }
+
+      .menu-card__desc {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+      }
+
+      .menu-section__link {
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      /* --------------------------------------------------------
+         Hours & Location
+         -------------------------------------------------------- */
+      .hours-grid {
+        display: grid;
+        gap: 2.5rem;
+      }
+
+      .hours-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .hours-table tr {
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .hours-table td {
+        padding: 0.625rem 0;
+        font-size: 0.9375rem;
+      }
+
+      .hours-table td:first-child {
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+
+      .hours-table td:last-child {
+        text-align: right;
+        color: var(--color-text-secondary);
+      }
+
+      .hours-table .closed {
+        color: var(--color-text-tertiary);
+      }
+
+      .hours-note {
+        font-size: 0.8125rem;
+        color: var(--color-text-tertiary);
+        margin-top: 0.75rem;
+        font-style: italic;
+      }
+
+      .location__address {
+        font-size: 1rem;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .location__phone {
+        font-weight: 500;
+        color: var(--color-text-primary);
+      }
+
+      .map-placeholder {
+        width: 100%;
+        height: 240px;
+        background: var(--color-surface-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-tertiary);
+        font-size: 0.875rem;
+        margin-top: 1rem;
+      }
+
+      /* --------------------------------------------------------
+         Reviews
+         -------------------------------------------------------- */
+      .reviews-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .review-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .review-card__stars {
+        color: var(--color-star);
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.08em;
+      }
+
+      .review-card__quote {
+        font-size: 0.9375rem;
+        color: var(--color-text-secondary);
+        line-height: 1.65;
+        margin-bottom: 1rem;
+      }
+
+      .review-card__author {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+
+      .review-card__source {
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .reviews__aggregate {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+      }
+
+      .reviews__aggregate strong {
+        color: var(--color-text-primary);
+      }
+
+      /* --------------------------------------------------------
+         CTA Banner
+         -------------------------------------------------------- */
+      .cta-banner {
+        text-align: center;
+        padding: 4rem 1.25rem;
+        background: var(--color-text-primary);
+        color: var(--color-text-inverse);
+      }
+
+      .cta-banner__heading {
+        font-family: var(--font-display);
+        font-size: 1.875rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.75rem;
+      }
+
+      .cta-banner__text {
+        font-size: 1rem;
+        opacity: 0.8;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-banner__actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* --------------------------------------------------------
+         Footer
+         -------------------------------------------------------- */
+      .footer {
+        text-align: center;
+        padding: 2rem 1.25rem;
+        border-top: 1px solid var(--color-border);
+        font-size: 0.75rem;
+        color: var(--color-text-tertiary);
+      }
+
+      .footer a {
+        color: var(--color-text-tertiary);
+        text-decoration: underline;
+      }
+
+      /* --------------------------------------------------------
+         Responsive — Tablet+
+         -------------------------------------------------------- */
+      @media (min-width: 768px) {
+        .hero__headline {
+          font-size: 3.75rem;
+        }
+
+        .hero__subheadline {
+          font-size: 1.25rem;
+        }
+
+        .section__heading {
+          font-size: 2.25rem;
+        }
+
+        .about__grid {
+          grid-template-columns: 1fr;
+        }
+
+        .menu-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hours-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .reviews-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .section {
+          padding: 5rem 0;
+        }
+
+        .cta-banner {
+          padding: 5rem 2rem;
+        }
+
+        .cta-banner__heading {
+          font-size: 2.25rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .menu-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .nav__inner {
+          height: 4rem;
+        }
+
+        .hero {
+          margin-top: 4rem;
+        }
+
+        .container {
+          padding: 0 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="container nav__inner">
+        <a href={`/${slug}`} class="nav__brand">{site.name}</a>
+        <ul class="nav__links">
+          <li><a href={`/${slug}/menu`}>Menu</a></li>
+          <li><a href={`/${slug}/contact`}>Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero__bg" style={`background-image: url('${site.hero.backgroundImage}')`}></div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content">
+        <h1 class="hero__headline">{site.hero.headline}</h1>
+        <p class="hero__subheadline">{site.hero.subheadline}</p>
+        <div class="hero__actions">
+          <a href={site.hero.ctaPrimary.href} class="btn btn--primary">{site.hero.ctaPrimary.label}</a>
+          {site.hero.ctaSecondary && (
+            <a href={site.hero.ctaSecondary.href} class="btn btn--outline">{site.hero.ctaSecondary.label}</a>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <p class="section__label">Our Story</p>
+        <h2 class="section__heading">{site.about.heading}</h2>
+        <div class="about__grid">
+          <div class="about__body">
+            {site.about.body.split('\n').filter((p: string) => p.trim()).map((paragraph: string) => (
+              <p>{paragraph}</p>
+            ))}
+            {site.about.highlight && (
+              <blockquote class="about__highlight">{site.about.highlight}</blockquote>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Highlights -->
+    <section class="section section--sunken" id="menu">
+      <div class="container">
+        <p class="section__label">From the Kitchen</p>
+        <h2 class="section__heading">What to Order</h2>
+        <div class="menu-grid">
+          {site.menuHighlights.map((item: any) => (
+            <div class="menu-card">
+              <img
+                src={item.image}
+                alt={item.name}
+                class="menu-card__image"
+                loading="lazy"
+                width="600"
+                height="400"
+              />
+              <div class="menu-card__body">
+                <div class="menu-card__header">
+                  <span class="menu-card__name">{item.name}</span>
+                  <span class="menu-card__price">${item.price}</span>
+                </div>
+                <p class="menu-card__desc">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="menu-section__link">
+          <a href={`/${slug}/menu`} class="btn btn--dark-outline">See Full Menu</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hours & Location -->
+    <section class="section" id="hours">
+      <div class="container">
+        <p class="section__label">Visit Us</p>
+        <h2 class="section__heading">Hours & Location</h2>
+        <div class="hours-grid">
+          <div>
+            <table class="hours-table">
+              {Object.entries({
+                Monday: site.hours.monday,
+                Tuesday: site.hours.tuesday,
+                Wednesday: site.hours.wednesday,
+                Thursday: site.hours.thursday,
+                Friday: site.hours.friday,
+                Saturday: site.hours.saturday,
+                Sunday: site.hours.sunday,
+              }).map(([day, hours]: [string, string]) => (
+                <tr>
+                  <td>{day}</td>
+                  <td class={hours === 'Closed' ? 'closed' : ''}>{hours}</td>
+                </tr>
+              ))}
+            </table>
+            {site.hours.notes && (
+              <p class="hours-note">{site.hours.notes}</p>
+            )}
+          </div>
+          <div>
+            <p class="location__address">
+              {site.address.street}<br />
+              {site.address.city}, {site.address.state} {site.address.zip}
+            </p>
+            <p class="location__phone">
+              <a href={`tel:${site.phone}`}>{site.phone}</a>
+            </p>
+            <div class="map-placeholder" aria-label="Map showing restaurant location">
+              Map embed will go here
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section section--sunken" id="reviews">
+      <div class="container">
+        <p class="section__label">What People Say</p>
+        <h2 class="section__heading">From Our Guests</h2>
+        <div class="reviews-grid">
+          {site.reviews.map((review: any) => (
+            <div class="review-card">
+              <div class="review-card__stars" aria-label={`${review.rating} out of 5 stars`}>
+                {renderStars(review.rating)}
+              </div>
+              <p class="review-card__quote">"{review.quote}"</p>
+              <p class="review-card__author">{review.author}</p>
+              <p class="review-card__source">{review.source}</p>
+            </div>
+          ))}
+        </div>
+        <p class="reviews__aggregate">
+          <span style="color: var(--color-star);">{renderStars(Math.round(site.aggregateRating.score))}</span>
+          {' '}<strong>{site.aggregateRating.score}</strong> out of 5 based on {site.aggregateRating.count} reviews on {site.aggregateRating.source}
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-banner">
+      <h2 class="cta-banner__heading">Ready to taste what everyone is talking about?</h2>
+      <p class="cta-banner__text">Walk-ins are always welcome. For parties of 6 or more, give us a call.</p>
+      <div class="cta-banner__actions">
+        <a href={`tel:${site.phone}`} class="btn btn--primary">Call to Book a Table</a>
+        <a href={`/${slug}/menu`} class="btn btn--outline">Order Online</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Made with <a href="https://localgenius.site">LocalGenius</a></p>
+    </footer>
+
+  </body>
+</html>
