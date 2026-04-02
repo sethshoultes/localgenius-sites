@@ -28,7 +28,7 @@ const site = {
     headline: "Dental care that listens",
     subheadline: "A neighborhood practice where your comfort matters. From checkups to advanced restorations, we're here for your family's smile.",
     backgroundImage: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1600&q=80",
-    ctaPrimary: { label: "Book Appointment", href: `/${slug}/contact` },
+    ctaPrimary: { label: "Book Appointment", href: `/${slug}/book` },
     ctaSecondary: { label: "New Patients Info", href: `#about` },
   },
   services: [
@@ -798,7 +798,7 @@ function renderStars(rating: number): string {
       <p class="cta-banner__text">We're accepting new families. Call today to schedule your first visit or complimentary consultation.</p>
       <div class="cta-banner__actions">
         <a href={`tel:${site.phone}`} class="btn btn--primary">Call to Book</a>
-        <a href={`/${slug}/contact`} class="btn btn--outline">Request Appointment</a>
+        <a href={`/${slug}/book`} class="btn btn--outline">Request Appointment</a>
       </div>
     </section>
 
