@@ -7,11 +7,16 @@
  * Will be wired to D1 later.
  */
 
+import { isValidSlug } from '../../lib/validate-slug';
+
 const { slug } = Astro.params;
 
-// Guard: if no slug, redirect to the default restaurant
-if (!slug || slug === 'undefined' || slug === 'null') {
-  return Astro.redirect('/marias-kitchen');
+// Guard: 404 for invalid or unknown slugs
+if (!isValidSlug(slug)) {
+  return new Response('<!DOCTYPE html><html><head><title>Site Not Found</title><style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#FAF8F5;color:#2C2C2C;margin:0}div{text-align:center}h1{font-size:2rem;margin-bottom:0.5rem}p{color:#6B7280}a{color:#C4704B}</style></head><body><div><h1>Site not found</h1><p>This business site doesn\'t exist yet.</p><p><a href="https://localgenius.company">Get your own site →</a></p></div></body></html>', {
+    status: 404,
+    headers: { 'Content-Type': 'text/html;charset=utf-8' },
+  });
 }
 
 // Reserved slugs that should never be treated as business slugs

@@ -7,11 +7,12 @@
  * Uses Craft theme design tokens.
  */
 
+import { isValidSlug } from '../../lib/validate-slug';
+
 const { slug } = Astro.params;
 
-// Guard: if no slug, redirect to the default restaurant
-if (!slug || slug === 'undefined' || slug === 'null') {
-  return Astro.redirect('/marias-kitchen');
+if (!isValidSlug(slug)) {
+  return new Response('Site not found.', { status: 404, headers: { 'Content-Type': 'text/plain' } });
 }
 
 // Reserved slugs that should never be treated as business slugs

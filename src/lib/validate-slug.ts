@@ -7,6 +7,7 @@
 
 // Known provisioned sites — add slugs as businesses are provisioned
 const KNOWN_SLUGS = new Set([
+  "marias-kitchen",
   "marias-kitchen-austin",
 ]);
 
