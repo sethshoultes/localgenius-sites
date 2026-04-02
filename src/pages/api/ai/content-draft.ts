@@ -19,6 +19,7 @@
 
 import type { APIRoute } from "astro";
 import { runLlama } from "../../../workers/ai-router";
+import { getCorsHeaders, corsPreflightResponse } from "../../../lib/cors";
 
 interface ContentDraftRequest {
   type: "social_post" | "review_response" | "email_subject" | "seo_keywords";
@@ -59,11 +60,7 @@ Return only the keywords, no explanations.`,
 
 export const POST: APIRoute = async ({ request, locals }) => {
   // CORS for browser requests
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
+  const corsHeaders = getCorsHeaders(request);
 
   // Auth check
   const auth = request.headers.get("Authorization");
@@ -164,14 +161,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
 };
 
 // Handle CORS preflight
-export const OPTIONS: APIRoute = async () => {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Access-Control-Max-Age": "86400",
-    },
-  });
+export const OPTIONS: APIRoute = async ({ request }) => {
+  return corsPreflightResponse(request);
 };
