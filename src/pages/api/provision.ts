@@ -12,14 +12,18 @@
 
 import type { APIRoute } from 'astro';
 import { provisionSite, BusinessSchema, ProvisioningError, type RegistryDB } from '../../lib/provisioning';
+import { getCorsHeaders, corsPreflightResponse } from '../../lib/cors';
 
 export const POST: APIRoute = async ({ request, locals }) => {
+  // CORS — scoped to allowed origins only (Jensen #5)
+  const corsHeaders = getCorsHeaders(request);
+
   // Auth check — require bearer token
   const auth = request.headers.get('Authorization');
   if (!auth || !auth.startsWith('Bearer ')) {
     return new Response(JSON.stringify({ error: 'Unauthorized — Bearer token required' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 
@@ -30,7 +34,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 
@@ -38,7 +42,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (!parsed.success) {
     return new Response(
       JSON.stringify({ error: 'Validation failed', details: parsed.error.flatten() }),
-      { status: 422, headers: { 'Content-Type': 'application/json' } }
+      { status: 422, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
 
@@ -50,7 +54,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (!env[v]) {
       return new Response(
         JSON.stringify({ error: `Missing environment variable: ${v}` }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
   }
@@ -72,7 +76,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     return new Response(JSON.stringify(result), {
       status: 201,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (err) {
     if (err instanceof ProvisioningError) {
@@ -82,13 +86,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
           step: err.step,
           retryable: err.retryable,
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
     return new Response(
       JSON.stringify({ error: 'Unexpected provisioning failure', detail: String(err) }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
+};
+
+// Handle CORS preflight
+export const OPTIONS: APIRoute = async ({ request }) => {
+  return corsPreflightResponse(request);
 };
