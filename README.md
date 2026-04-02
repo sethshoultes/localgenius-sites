@@ -1,154 +1,151 @@
 # LocalGenius Sites
 
-AI-powered website builder on Cloudflare. Provisions Emdash-powered sites per business in seconds.
+Managed websites for local businesses — built by AI, hosted on the edge.
+
+Instantly provision Emdash CMS sites per business on Cloudflare. Update content naturally through an AI-powered MCP bridge. Zero ops, zero friction.
+
+**Live Demo:** [localgenius-sites.pages.dev](https://localgenius-sites.pages.dev)
+- Restaurant template: `/marias-kitchen`
+- Professional services: `/bright-smile/services`
 
 ## Architecture
 
+**Astro + Cloudflare Workers + D1 + R2**
+
 ```
-                    LocalGenius Control Plane
-                    (Astro + Cloudflare Workers)
-                            |
-              +-------------+-------------+
-              |                           |
-    Provisioning Service           MCP Bridge
-    (src/lib/provisioning.ts)  (src/lib/mcp-bridge.ts)
-              |                           |
-              v                           v
-    Cloudflare REST API          Emdash MCP Server
-    - D1: per-site database       (/{slug}.localgenius.site/_mcp)
-    - R2: per-site assets
-    - Workers: per-site runtime
-    - DNS: {slug}.localgenius.site
+Astro control plane (localgenius.site)
+  ↓
+Cloudflare API
+  ├─ D1: per-business SQLite database
+  ├─ R2: per-business image storage
+  ├─ Workers: per-business Emdash runtime
+  └─ DNS: subdomain provisioning ({slug}.localgenius.site)
+        ↓
+    Emdash MCP bridge
+      ↓
+    Content updates via natural language
 ```
 
-Each business gets:
-- Isolated D1 database
-- Isolated R2 bucket
-- Dedicated Cloudflare Worker (Emdash runtime)
-- Subdomain: `{slug}.localgenius.site`
-- Natural language content updates via MCP
+Each business gets: isolated D1 database, isolated R2 bucket, dedicated Worker, and subdomain.
 
-## Quick Start
+## Tech Stack
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Framework** | Astro 4.7 | SSR on Cloudflare Workers |
+| **Database** | Cloudflare D1 | SQLite per business (registry + per-site) |
+| **Storage** | Cloudflare R2 | Image & asset storage per site |
+| **AI** | Workers AI | Whisper (transcription), Llama, SDXL (image generation) |
+| **CMS** | Emdash | Content management via MCP protocol |
+| **Fonts** | Source Sans 3, Lora | System typefaces |
+
+## Templates
+
+### Restaurant (7 sections)
+- Hero with call-to-action
+- Menu & pricing
+- Hours & location
+- Photo gallery
+- Customer testimonials
+- About the chef
+- Contact & reservations
+
+### Professional Services (7 sections)
+- Hero with service highlights
+- Service offerings with pricing
+- Team bios
+- Case studies & results
+- Client testimonials
+- FAQ
+- Contact & booking
+
+## API Endpoints
+
+| Path | Method | Purpose |
+|------|--------|---------|
+| `/api/provision` | POST | Create new business site |
+| `/api/update` | POST | Update content via natural language |
+| `/api/sites` | GET | List all provisioned sites |
+| `/api/voice/transcribe` | POST | Speech-to-text (Whisper) |
+| `/api/ai/content-draft` | POST | Generate marketing copy |
+| `/api/ai/sentiment` | POST | Analyze customer sentiment |
+| `/api/ai/generate-image` | POST | Create images (SDXL) |
+
+## Getting Started
 
 ```bash
 npm install
 
-# Set secrets (never commit these)
+# Set Cloudflare credentials (required for provisioning)
 wrangler secret put CLOUDFLARE_API_TOKEN
 wrangler secret put CLOUDFLARE_ACCOUNT_ID
 wrangler secret put CLOUDFLARE_ZONE_ID
 wrangler secret put MCP_SHARED_SECRET
 
-# Create the registry D1 database
-wrangler d1 create localgenius-registry
-# Copy the database_id into wrangler.toml
+# Local development
+npm run dev       # http://localhost:3000
 
-# Create the global R2 bucket
-wrangler r2 bucket create localgenius-assets
-
-# Local dev
-npm run dev
-
-# Deploy
+# Build and deploy
+npm run build
 npm run deploy
 ```
 
-## Provisioning a Site
+## Design System
 
-```bash
-curl -X POST https://localgenius-sites.workers.dev/api/provision \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "slug": "joes-pizza",
-    "name": "Joe'\''s Pizza",
-    "type": "restaurant",
-    "city": "Austin",
-    "phone": "512-555-0100",
-    "email": "joe@joespizza.com"
-  }'
-```
+**Color Palette:**
+- **Terracotta** — `#C4704B` (primary accent, warmth)
+- **Sage** — `#7A8B6F` (secondary, natural feel)
+- **Warm White** — `#FAF8F5` (backgrounds, breathing room)
 
-Response:
-```json
-{
-  "siteUrl": "https://joes-pizza.localgenius.site",
-  "adminUrl": "https://joes-pizza.localgenius.site/_admin",
-  "status": "ready",
-  "databaseId": "...",
-  "bucketName": "localgenius-joes-pizza",
-  "workerId": "...",
-  "provisionedAt": "2026-04-02T..."
-}
-```
-
-## Updating Site Content via MCP
-
-```bash
-curl -X POST https://localgenius-sites.workers.dev/api/update \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "slug": "joes-pizza",
-    "instruction": "Update the homepage headline to highlight our new wood-fired oven"
-  }'
-```
-
-## Environment Variables
-
-| Variable | Description | Required |
-|---|---|---|
-| `CLOUDFLARE_API_TOKEN` | CF API token with Workers, D1, R2, DNS edit permissions | Yes |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID | Yes |
-| `CLOUDFLARE_ZONE_ID` | Zone ID for localgenius.site | Yes |
-| `LOCALGENIUS_DOMAIN` | Base domain (default: localgenius.site) | No |
-| `MCP_SHARED_SECRET` | Shared secret for MCP server auth | No |
+**Typography:**
+- **Headings:** Source Sans 3 (sans-serif, modern)
+- **Body:** Lora (serif, readable)
 
 ## Project Structure
 
 ```
-localgenius-sites/
-  astro.config.mjs         — Astro + Cloudflare adapter config
-  wrangler.toml            — D1, R2, Workers bindings
-  package.json
-  tsconfig.json
-  src/
-    lib/
-      provisioning.ts      — Core provisioning service (Cloudflare API)
-      mcp-bridge.ts        — MCP client for Emdash content updates
-    pages/
-      index.astro          — Control plane landing page
-      api/
-        provision.ts       — POST /api/provision
-        update.ts          — POST /api/update
+src/
+  pages/
+    index.astro              — Control plane dashboard
+    api/
+      provision.ts           — Provision new business site
+      update.ts              — Content updates via MCP
+      sites.ts               — Site registry
+      voice/transcribe.ts    — Speech-to-text
+      ai/content-draft.ts    — Content generation
+      ai/sentiment.ts        — Sentiment analysis
+      ai/generate-image.ts   — Image generation
+  components/
+    BusinessCard.astro       — Site listing component
+    ProvisionForm.astro      — Onboarding flow
+  templates/
+    Restaurant.astro         — Restaurant template (7 sections)
+    ProfessionalServices.astro — Services template (7 sections)
+  design/
+    colors.ts                — Design tokens
+    typography.ts            — Font definitions
+  lib/
+    provisioning.ts          — Cloudflare API orchestration
+    mcp-bridge.ts            — MCP protocol client
+    database.ts              — D1 queries
+    storage.ts               — R2 operations
+  workers/
+    site-runtime.ts          — Per-business Worker handler
 ```
 
-## Provisioning Steps
+## Deployment
 
-1. **D1 database** — `localgenius-{slug}` — isolated SQLite per business
-2. **R2 bucket** — `localgenius-{slug}` — assets, images, uploads
-3. **Worker deploy** — Emdash runtime with D1 + R2 bindings
-4. **DNS** — CNAME + Workers route for `{slug}.localgenius.site`
-5. **DB seed** — Business profile, default pages, settings
+```bash
+# Preview
+npm run deploy
 
-Each step is retryable. Failures surface with `retryable: true/false` flag.
+# Production
+npm run deploy:prod
 
-## MCP Protocol
+# Database migrations
+npm run db:migrate
+```
 
-Emdash exposes MCP at `https://{slug}.localgenius.site/_mcp`.
+---
 
-The bridge uses MCP 2024-11-05 protocol:
-1. `initialize` handshake
-2. `tools/list` — discover available tools
-3. Natural language → tool selection (rule-based now, Claude API later)
-4. `tools/call` — execute updates
-5. Return structured `ContentChange[]` diff
-
-## Next Steps
-
-- [ ] Replace rule-based MCP interpreter with Claude API tool selection
-- [ ] Add site registry to global D1 — track all provisioned sites
-- [ ] Streaming MCP responses via SSE
-- [ ] Provisioning status webhook callbacks
-- [ ] Multi-tenant admin dashboard
-- [ ] Emdash worker template — replace placeholder with real bundle
+Built for AI-native workflows. Questions? See `/docs` for architecture deep-dives.
